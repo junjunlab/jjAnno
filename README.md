@@ -13,15 +13,15 @@ Here I provide a package **jjAnno** that you can add different annotaions includ
 You can install the development version of jjAnno like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+# install.packages("devtools")
+devtools::install_github("junjunlab/jjAnno")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+A eaxmple:
 
-``` r
-library(jjAnno)
-## basic example code
-```
+![image](https://user-images.githubusercontent.com/64965509/179390758-cb5d89cc-efdf-4bf1-9eae-e6a537f6f044.png)
+
+## Documentation
 
