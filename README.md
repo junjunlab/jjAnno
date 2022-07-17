@@ -4,7 +4,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of jjAnno is to ...
+In fact, adding multiple different annotations (**text, segment, rect, points, images** and so on) beside the plot is needed. But we do not want to spend much time ,energy and code to render our raw figures. The **Ai**`(Artificial Intelligence)` is a good choice for you to produce a complex plot but **without much accuracy**.
+
+Here I provide a package **jjAnno** that you can add different annotaions including **point**, **text**, **rect**, **segemnt**, **image** beside or inside the plot. This will be **save your much time and cost** to make a complex figure.
 
 ## Installation
 
