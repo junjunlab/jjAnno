@@ -19,7 +19,7 @@ devtools::install_github("junjunlab/jjAnno")
 
 ## Example
 
-A eaxmple:
+An eaxmple shows here:
 
 ![image](https://user-images.githubusercontent.com/64965509/179390758-cb5d89cc-efdf-4bf1-9eae-e6a537f6f044.png)
 
