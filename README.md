@@ -25,6 +25,6 @@ An eaxmple shows here:
 
 ## Documentation
 
-More examples details see:
+More examples and details see:
 
 > **https://github.com/junjunlab/jjAnno/wiki/jjAnno-0.0.1**
