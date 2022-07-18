@@ -4,6 +4,7 @@
 #' @description This function is used to add points annotations in plot.
 #' @param object Your ggplot list. Default(NULL).
 #' @param annoPos The position for the annotation to be added. Default("top").
+#' @param relSideDist The relative distance ratio to the y axis range. Default(0.1).
 #' @param xPosition The x axis coordinate for the points. Default(NULL).
 #' @param yPosition The y axis coordinate for the points. Default(NULL).
 #' @param pCol The point colors. Default(NULL).
@@ -50,6 +51,7 @@
 
 # define functions
 annoPoint <- function(object = NULL,
+                      relSideDist = 0.1,
                       annoPos = 'top',
                       xPosition = NULL,
                       yPosition = NULL,
@@ -81,13 +83,13 @@ annoPoint <- function(object = NULL,
       # numeric or discrete
       if(is.numeric(data_y)){
         if(annoPos == 'top'){
-          yPos <- max(data_y) + 0.1*max(data_y)
+          yPos <- max(data_y) + relSideDist*max(data_y)
         }else{
-          yPos <- min(data_y) - 0.1*max(data_y)
+          yPos <- min(data_y) - relSideDist*max(data_y)
         }
       }else{
         if(annoPos == 'top'){
-          yPos <- length(data_y) + 0.1*length(data_y)
+          yPos <- length(data_y) + relSideDist*length(data_y)
         }else{
           yPos <- 0
         }
@@ -112,15 +114,15 @@ annoPoint <- function(object = NULL,
       # numeric or discrete
       if(is.numeric(data_x)){
         if(annoPos == 'left'){
-          xPos <- min(data_x) - 0.1*max(data_x)
+          xPos <- min(data_x) - relSideDist*max(data_x)
         }else{
-          xPos <- max(data_x) + 0.1*max(data_x)
+          xPos <- max(data_x) + relSideDist*max(data_x)
         }
       }else{
         if(annoPos == 'left'){
           xPos <- 0
         }else{
-          xPos <- length(data_x) + 0.1*length(data_x)
+          xPos <- length(data_x) + relSideDist*length(data_x)
         }
       }
     }else{

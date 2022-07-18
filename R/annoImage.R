@@ -3,6 +3,7 @@
 #' @author Junjun Lao
 #' @description This function is used to add image annotations in plot.
 #' @param object This function is used to add segment annotations in plot.
+#' @param relSideDist The relative distance ratio to the y axis range. Default(0.1).
 #' @param annoPos The position for the annotation to be added. Default("top").
 #' @param xPosition The x axis coordinate for the image. Default(NULL).
 #' @param yPosition The y axis coordinate for the image. Default(NULL).
@@ -61,6 +62,7 @@
 
 # define function
 annoImage <- function(object = NULL,
+                      relSideDist = 0.1,
                       annoPos = 'top',
                       xPosition = NULL,
                       yPosition = NULL,
@@ -98,18 +100,18 @@ annoImage <- function(object = NULL,
         # numeric or discrete
         if(is.numeric(data_y)){
           if(annoPos == 'top'){
-            ymax <- max(data_y) + 0.1*max(data_y)
+            ymax <- max(data_y) + relSideDist*max(data_y)
             ymin <- max(data_y)
           }else{
-            ymin <- min(data_y) - 0.1*max(data_y)
+            ymin <- min(data_y) - relSideDist*max(data_y)
             ymax <- min(data_y)
           }
         }else{
           if(annoPos == 'top'){
-            ymax <- length(data_y) + 0.1*length(data_y)
+            ymax <- length(data_y) + relSideDist*length(data_y)
             ymin <- length(data_y)
           }else{
-            ymin <- -0.01*length(data_y)
+            ymin <- -relSideDist*length(data_y)
             ymax <- 0
           }
         }
@@ -131,18 +133,18 @@ annoImage <- function(object = NULL,
         # numeric or discrete
         if(is.numeric(data_x)){
           if(annoPos == 'left'){
-            xmin <- min(data_x) - 0.1*max(data_x)
+            xmin <- min(data_x) - relSideDist*max(data_x)
             xmax <- min(data_x)
           }else{
-            xmax <- max(data_x) + 0.1*max(data_x)
+            xmax <- max(data_x) + relSideDist*max(data_x)
             xmin <- max(data_x)
           }
         }else{
           if(annoPos == 'left'){
-            xmin <- -0.01*length(data_x)
+            xmin <- -relSideDist*length(data_x)
             xmax <- 0
           }else{
-            xmax <- length(data_x) + 0.1*length(data_x)
+            xmax <- length(data_x) + relSideDist*length(data_x)
             xmin <- length(data_x)
           }
         }

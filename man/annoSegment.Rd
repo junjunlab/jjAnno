@@ -6,6 +6,7 @@
 \usage{
 annoSegment(
   object = NULL,
+  relSideDist = 0.1,
   annoPos = "top",
   xPosition = NULL,
   yPosition = NULL,
@@ -35,6 +36,8 @@ annoSegment(
 }
 \arguments{
 \item{object}{Your ggplot list. Default(NULL).}
+
+\item{relSideDist}{The relative distance ratio to the y axis range. Default(0.1).}
 
 \item{annoPos}{The position for the annotation to be added. Default("top").}
 

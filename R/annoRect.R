@@ -3,6 +3,7 @@
 #' @author Junjun Lao
 #' @description This function is used to add rect annotations in plot.
 #' @param object Your ggplot list. Default(NULL).
+#' @param relSideDist The relative distance ratio to the y axis range. Default(0.1).
 #' @param annoPos The position for the annotation to be added. Default("top").
 #' @param xPosition The x axis coordinate for the rect. Default(NULL).
 #' @param yPosition The y axis coordinate for the rect. Default(NULL).
@@ -53,6 +54,7 @@
 
 # define functions
 annoRect <- function(object = NULL,
+                     relSideDist = 0.1,
                      annoPos = 'top',
                      xPosition = NULL,
                      yPosition = NULL,
@@ -92,19 +94,19 @@ annoRect <- function(object = NULL,
         # numeric or discrete
         if(is.numeric(data_y)){
           if(annoPos == 'top'){
-            ymax <- max(data_y) + 0.1*max(data_y)
+            ymax <- max(data_y) + relSideDist*max(data_y)
             ymin <- max(data_y)
           }else{
-            ymin <- min(data_y) - 0.1*max(data_y)
+            ymin <- min(data_y) - relSideDist*max(data_y)
             ymax <- min(data_y)
           }
         }else{
           if(annoPos == 'top'){
-            ymax <- length(data_y) + 0.1*length(data_y)
+            ymax <- length(data_y) + relSideDist*length(data_y)
             ymin <- length(data_y)
           }else{
             ymax <- 0
-            ymin <- -0.1*length(data_y)
+            ymin <- -relSideDist*length(data_y)
           }
         }
       }else{
@@ -125,19 +127,19 @@ annoRect <- function(object = NULL,
         # numeric or discrete
         if(is.numeric(data_x)){
           if(annoPos == 'left'){
-            xmin <- min(data_x) - 0.1*max(data_x)
+            xmin <- min(data_x) - relSideDist*max(data_x)
             xmax <- min(data_x)
           }else{
             xmin <- max(data_x)
-            xmax <- max(data_x) + 0.1*max(data_x)
+            xmax <- max(data_x) + relSideDist*max(data_x)
           }
         }else{
           if(annoPos == 'left'){
-            xmin <- -0.1*length(data_x)
+            xmin <- -relSideDist*length(data_x)
             xmax <- 0
           }else{
             xmin <- length(data_x)
-            xmax <- length(data_x) + 0.1*length(data_x)
+            xmax <- length(data_x) + relSideDist*length(data_x)
           }
         }
       }else{

@@ -6,6 +6,7 @@
 \usage{
 annoImage(
   object = NULL,
+  relSideDist = 0.1,
   annoPos = "top",
   xPosition = NULL,
   yPosition = NULL,
@@ -18,6 +19,8 @@ annoImage(
 }
 \arguments{
 \item{object}{This function is used to add segment annotations in plot.}
+
+\item{relSideDist}{The relative distance ratio to the y axis range. Default(0.1).}
 
 \item{annoPos}{The position for the annotation to be added. Default("top").}
 
