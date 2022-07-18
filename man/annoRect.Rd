@@ -3,26 +3,14 @@
 \name{annoRect}
 \alias{annoRect}
 \title{annoRect}
-\usage{
-annoRect(
-  object = NULL,
-  relSideDist = 0.1,
-  annoPos = "top",
-  xPosition = NULL,
-  yPosition = NULL,
-  pCol = NULL,
-  pFill = NULL,
-  rectWidth = 1,
-  lty = NULL,
-  lwd = NULL,
-  alpha = NULL,
-  annoManual = FALSE
-)
-}
 \arguments{
 \item{object}{Your ggplot list. Default(NULL).}
 
 \item{relSideDist}{The relative distance ratio to the y axis range. Default(0.1).}
+
+\item{aesGroup}{Whether use your group column to add rect annotation. Default("FALSE").}
+
+\item{aesGroName}{The mapping column name. Default(NULL).}
 
 \item{annoPos}{The position for the annotation to be added. Default("top").}
 
@@ -43,6 +31,26 @@ annoRect(
 \item{alpha}{The rect fill color alpha. Default(NULL).}
 
 \item{annoManual}{Whether annotate by yourself by supplying with x and y coordinates. Default(FALSE).}
+
+\item{addText}{Whether add text label on segment. Default(FALSE).}
+
+\item{textCol}{The text colors. Default(NULL).}
+
+\item{textSize}{The text size. Default(NULL).}
+
+\item{fontfamily}{The text fontfamily. Default(NULL).}
+
+\item{fontface}{The text fontface. Default(NULL).}
+
+\item{textLabel}{The text textLabel. Default(NULL).}
+
+\item{textRot}{The text angle. Default(NULL).}
+
+\item{textHVjust}{The text distance from the segment. Default(0.2).}
+
+\item{hjust}{The text hjust. Default(NULL).}
+
+\item{vjust}{The text vjust. Default(NULL).}
 }
 \value{
 Return a ggplot object.

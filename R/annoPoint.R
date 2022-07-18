@@ -89,7 +89,7 @@ annoPoint <- function(object = NULL,
         }
       }else{
         if(annoPos == 'top'){
-          yPos <- length(data_y) + relSideDist*length(data_y)
+          yPos <- length(unique(data_y)) + relSideDist*length(unique(data_y))
         }else{
           yPos <- 0
         }
@@ -122,7 +122,7 @@ annoPoint <- function(object = NULL,
         if(annoPos == 'left'){
           xPos <- 0
         }else{
-          xPos <- length(data_x) + relSideDist*length(data_x)
+          xPos <- length(unique(data_x)) + relSideDist*length(unique(data_x))
         }
       }
     }else{

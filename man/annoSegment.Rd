@@ -3,41 +3,14 @@
 \name{annoSegment}
 \alias{annoSegment}
 \title{annoSegment}
-\usage{
-annoSegment(
-  object = NULL,
-  relSideDist = 0.1,
-  annoPos = "top",
-  xPosition = NULL,
-  yPosition = NULL,
-  pCol = NULL,
-  segWidth = 1,
-  lty = NULL,
-  lwd = 10,
-  alpha = NULL,
-  lineend = "square",
-  annoManual = FALSE,
-  mArrow = NULL,
-  addBranch = FALSE,
-  bArrow = NULL,
-  branDirection = 1,
-  branRelSegLen = 0.3,
-  addText = FALSE,
-  textCol = NULL,
-  textSize = NULL,
-  fontfamily = NULL,
-  fontface = NULL,
-  textLabel = NULL,
-  textRot = 0,
-  textHVjust = 0.2,
-  hjust = NULL,
-  vjust = NULL
-)
-}
 \arguments{
 \item{object}{Your ggplot list. Default(NULL).}
 
 \item{relSideDist}{The relative distance ratio to the y axis range. Default(0.1).}
+
+\item{aesGroup}{Whether use your group column to add rect annotation. Default("FALSE").}
+
+\item{aesGroName}{The mapping column name. Default(NULL).}
 
 \item{annoPos}{The position for the annotation to be added. Default("top").}
 

@@ -4,6 +4,8 @@
 #' @description This function is used to add segment annotations in plot.
 #' @param object Your ggplot list. Default(NULL).
 #' @param relSideDist The relative distance ratio to the y axis range. Default(0.1).
+#' @param aesGroup Whether use your group column to add rect annotation. Default("FALSE").
+#' @param aesGroName The mapping column name. Default(NULL).
 #' @param annoPos The position for the annotation to be added. Default("top").
 #' @param xPosition The x axis coordinate for the segment. Default(NULL).
 #' @param yPosition The y axis coordinate for the segment. Default(NULL).
@@ -65,9 +67,13 @@
 #'            branDirection = -1,
 #'            lwd = 3)
 
+globalVariables(c(".data"))
+
 # define function
 annoSegment <- function(object = NULL,
                         relSideDist = 0.1,
+                        aesGroup = FALSE,
+                        aesGroName = NULL,
                         annoPos = 'top',
                         xPosition = NULL,
                         yPosition = NULL,
@@ -110,12 +116,33 @@ annoSegment <- function(object = NULL,
   if(annoManual == FALSE){
     # annotation position
     if(annoPos %in% c('top','botomn')){
-      nPoints <- length(xPosition)
+      # whether use group mapping
+      if(aesGroup == FALSE){
+        nPoints <- length(xPosition)
 
-      # xPos
-      xPos <- xPosition
-      xmin <- xPos - segWidth/2
-      xmax <- xPos + segWidth/2
+        # xPos
+        xPos <- xPosition
+        xmin <- xPos - segWidth/2
+        xmax <- xPos + segWidth/2
+      }else{
+        # order
+        groupInfo <- data %>% dplyr::select(.data[[aes_x]],.data[[aesGroName]]) %>%
+          unique() %>%
+          dplyr::select(.data[[aesGroName]]) %>%
+          table() %>%
+          data.frame()
+
+        # calculate group coordinate
+        start <- c(1,groupInfo$Freq[1:(length(groupInfo$Freq) - 1)]) %>%
+          cumsum()
+        end <- cumsum(groupInfo$Freq)
+
+        # xPos
+        xmin <- start - segWidth/2
+        xmax <- end + segWidth/2
+
+        nPoints <- length(start)
+      }
 
       # not supply yPos auto calculate
       if(is.null(yPosition)){
@@ -130,10 +157,10 @@ annoSegment <- function(object = NULL,
           }
         }else{
           if(annoPos == 'top'){
-            ymax <- length(data_y) + relSideDist*length(data_y)
+            ymax <- length(unique(data_y)) + relSideDist*length(unique(data_y))
             ymin <- ymax
           }else{
-            ymin <- -relSideDist*length(data_y)
+            ymin <- -relSideDist*length(unique(data_y))
             ymax <- ymin
           }
         }
@@ -143,12 +170,34 @@ annoSegment <- function(object = NULL,
       }
 
     }else if(annoPos %in% c('left','right')){
-      nPoints <- length(yPosition)
+      # whether use group mapping
+      if(aesGroup == FALSE){
+        nPoints <- length(yPosition)
 
-      # yPos
-      yPos <- yPosition
-      ymin <- yPos - segWidth/2
-      ymax <- yPos + segWidth/2
+        # yPos
+        yPos <- yPosition
+        ymin <- yPos - segWidth/2
+        ymax <- yPos + segWidth/2
+      }else{
+        # order
+        groupInfo <- data %>% dplyr::select(.data[[aes_y]],.data[[aesGroName]]) %>%
+          unique() %>%
+          dplyr::select(.data[[aesGroName]]) %>%
+          table() %>%
+          data.frame()
+
+        # calculate group coordinate
+        start <- c(1,groupInfo$Freq[1:(length(groupInfo$Freq) - 1)]) %>%
+          cumsum()
+
+        end <- cumsum(groupInfo$Freq)
+
+        # yPos
+        ymin <- start - segWidth/2
+        ymax <- end + segWidth/2
+
+        nPoints <- length(start)
+      }
 
       # not supply xPos auto calculate
       if(is.null(xPosition)){
@@ -163,10 +212,10 @@ annoSegment <- function(object = NULL,
           }
         }else{
           if(annoPos == 'left'){
-            xmin <- -relSideDist*length(data_x)
+            xmin <- -relSideDist*length(unique(data_x))
             xmax <- xmin
           }else{
-            xmax <- length(data_x) + relSideDist*length(data_x)
+            xmax <- length(unique(data_x)) + relSideDist*length(unique(data_x))
             xmin <- xmax
           }
         }
@@ -308,6 +357,13 @@ annoSegment <- function(object = NULL,
     textCol <- textCol
   }
 
+  # ==================================
+  # test text label origin from
+  if(aesGroup == FALSE){
+    textLabel <- textLabel
+  }else{
+    textLabel <- groupInfo[,1]
+  }
 
   # whether add text label
   if(addText == TRUE & annoPos %in% c('top','botomn')){
@@ -327,9 +383,9 @@ annoSegment <- function(object = NULL,
                                 just = "centre",
                                 rot = textRot),
           xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-          ymin = ggplot2::unit(ymin + textHVjust,'native'),ymax = ggplot2::unit(ymin + textHVjust,'native'))
+          ymin = ggplot2::unit(ymin + textHVjust,'native'),ymax = ggplot2::unit(ymax + textHVjust,'native'))
     }
-  }else if(addBranch == TRUE & annoPos %in% c('left','right')){
+  }else if(addText == TRUE & annoPos %in% c('left','right')){
     # plot
     for (i in 1:nPoints)  {
       object <- object +
@@ -346,7 +402,7 @@ annoSegment <- function(object = NULL,
                                 just = "centre",
                                 rot = textRot),
           xmin = ggplot2::unit(xmin + textHVjust,'native'),xmax = ggplot2::unit(xmax + textHVjust,'native'),
-          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymin[i],'native'))
+          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
     }
   }else{}
 

@@ -4,6 +4,8 @@
 #' @description This function is used to add rect annotations in plot.
 #' @param object Your ggplot list. Default(NULL).
 #' @param relSideDist The relative distance ratio to the y axis range. Default(0.1).
+#' @param aesGroup Whether use your group column to add rect annotation. Default("FALSE").
+#' @param aesGroName The mapping column name. Default(NULL).
 #' @param annoPos The position for the annotation to be added. Default("top").
 #' @param xPosition The x axis coordinate for the rect. Default(NULL).
 #' @param yPosition The y axis coordinate for the rect. Default(NULL).
@@ -14,6 +16,16 @@
 #' @param lwd The rect line width. Default(NULL).
 #' @param alpha The rect fill color alpha. Default(NULL).
 #' @param annoManual Whether annotate by yourself by supplying with x and y coordinates. Default(FALSE).
+#' @param addText Whether add text label on segment. Default(FALSE).
+#' @param textCol The text colors. Default(NULL).
+#' @param textSize The text size. Default(NULL).
+#' @param fontfamily The text fontfamily. Default(NULL).
+#' @param fontface The text fontface. Default(NULL).
+#' @param textLabel The text textLabel. Default(NULL).
+#' @param textRot The text angle. Default(NULL).
+#' @param textHVjust The text distance from the segment. Default(0.2).
+#' @param hjust The text hjust. Default(NULL).
+#' @param vjust The text vjust. Default(NULL).
 #'
 #' @return Return a ggplot object.
 #' @export
@@ -52,9 +64,13 @@
 #'         xPosition = c(3,9.5),
 #'         rectWidth = 1)
 
+globalVariables(c(".data"))
+
 # define functions
 annoRect <- function(object = NULL,
                      relSideDist = 0.1,
+                     aesGroup = FALSE,
+                     aesGroName = NULL,
                      annoPos = 'top',
                      xPosition = NULL,
                      yPosition = NULL,
@@ -64,7 +80,17 @@ annoRect <- function(object = NULL,
                      lty = NULL,
                      lwd = NULL,
                      alpha = NULL,
-                     annoManual = FALSE){
+                     annoManual = FALSE,
+                     addText = FALSE,
+                     textCol = NULL,
+                     textSize = NULL,
+                     fontfamily = NULL,
+                     fontface = NULL,
+                     textLabel = NULL,
+                     textRot = 0,
+                     textHVjust = 0.2,
+                     hjust = NULL,
+                     vjust = NULL){
   # ============================================================================
   # get data
   data <- object$data
@@ -82,12 +108,32 @@ annoRect <- function(object = NULL,
   if(annoManual == FALSE){
     # annotation position
     if(annoPos %in% c('top','botomn')){
-      nPoints <- length(xPosition)
+      if(aesGroup == FALSE){
+        nPoints <- length(xPosition)
 
-      # xPos
-      xPos <- xPosition
-      xmin <- xPos - rectWidth/2
-      xmax <- xPos + rectWidth/2
+        # xPos
+        xPos <- xPosition
+        xmin <- xPos - rectWidth/2
+        xmax <- xPos + rectWidth/2
+      }else{
+        # order
+        groupInfo <- data %>% dplyr::select(.data[[aes_x]],.data[[aesGroName]]) %>%
+          unique() %>%
+          dplyr::select(.data[[aesGroName]]) %>%
+          table() %>%
+          data.frame()
+
+        # calculate group coordinate
+        start <- c(1,groupInfo$Freq[1:(length(groupInfo$Freq) - 1)]) %>%
+          cumsum()
+        end <- cumsum(groupInfo$Freq)
+
+        # xPos
+        xmin <- start - rectWidth/2
+        xmax <- end + rectWidth/2
+
+        nPoints <- length(start)
+      }
 
       # not supply yPos auto calculate
       if(is.null(yPosition)){
@@ -102,11 +148,11 @@ annoRect <- function(object = NULL,
           }
         }else{
           if(annoPos == 'top'){
-            ymax <- length(data_y) + relSideDist*length(data_y)
-            ymin <- length(data_y)
+            ymax <- length(unique(data_y)) + relSideDist*length(unique(data_y))
+            ymin <- length(unique(data_y))
           }else{
             ymax <- 0
-            ymin <- -relSideDist*length(data_y)
+            ymin <- -relSideDist*length(unique(data_y))
           }
         }
       }else{
@@ -115,12 +161,34 @@ annoRect <- function(object = NULL,
       }
 
     }else if(annoPos %in% c('left','right')){
-      nPoints <- length(yPosition)
+      # whether use group mapping
+      if(aesGroup == FALSE){
+        nPoints <- length(yPosition)
 
-      # yPos
-      yPos <- yPosition
-      ymin <- yPos - rectWidth/2
-      ymax <- yPos + rectWidth/2
+        # yPos
+        yPos <- yPosition
+        ymin <- yPos - rectWidth/2
+        ymax <- yPos + rectWidth/2
+      }else{
+        # order
+        groupInfo <- data %>% dplyr::select(.data[[aes_y]],.data[[aesGroName]]) %>%
+          unique() %>%
+          dplyr::select(.data[[aesGroName]]) %>%
+          table() %>%
+          data.frame()
+
+        # calculate group coordinate
+        start <- c(1,groupInfo$Freq[1:(length(groupInfo$Freq) - 1)]) %>%
+          cumsum()
+
+        end <- cumsum(groupInfo$Freq)
+
+        # yPos
+        ymin <- start - rectWidth/2
+        ymax <- end + rectWidth/2
+
+        nPoints <- length(start)
+      }
 
       # not supply xPos auto calculate
       if(is.null(xPosition)){
@@ -135,11 +203,11 @@ annoRect <- function(object = NULL,
           }
         }else{
           if(annoPos == 'left'){
-            xmin <- -relSideDist*length(data_x)
+            xmin <- -relSideDist*length(unique(data_x))
             xmax <- 0
           }else{
-            xmin <- length(data_x)
-            xmax <- length(data_x) + relSideDist*length(data_x)
+            xmin <- length(unique(data_x))
+            xmax <- length(unique(data_x)) + relSideDist*length(unique(data_x))
           }
         }
       }else{
@@ -237,6 +305,64 @@ annoRect <- function(object = NULL,
 
   }else{}
 
+  # ============================================================================
+  # text color
+  if(is.null(textCol)){
+    textCol <- useMyCol('stallion',n = nPoints)
+  }else{
+    textCol <- textCol
+  }
+
+  # ==================================
+  # test text label origin from
+  if(aesGroup == FALSE){
+    textLabel <- textLabel
+  }else{
+    textLabel <- groupInfo[,1]
+  }
+
+  # whether add text label
+  if(addText == TRUE & annoPos %in% c('top','botomn')){
+    # plot
+    for (i in 1:nPoints)  {
+      object <- object +
+        # add text
+        ggplot2::annotation_custom(
+          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                fontsize = textSize,
+                                                fontfamily = fontfamily,
+                                                fontface = fontface),
+                                hjust = hjust,
+                                vjust = vjust,
+                                label = textLabel[i],
+                                check.overlap = T,
+                                just = "centre",
+                                rot = textRot),
+          xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
+          ymin = ggplot2::unit(ymin + textHVjust,'native'),ymax = ggplot2::unit(ymax + textHVjust,'native'))
+    }
+  }else if(addText == TRUE & annoPos %in% c('left','right')){
+    # plot
+    for (i in 1:nPoints)  {
+      object <- object +
+        # add text
+        ggplot2::annotation_custom(
+          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                fontsize = textSize,
+                                                fontfamily = fontfamily,
+                                                fontface = fontface),
+                                hjust = hjust,
+                                vjust = vjust,
+                                label = textLabel[i],
+                                check.overlap = T,
+                                just = "centre",
+                                rot = textRot),
+          xmin = ggplot2::unit(xmin + textHVjust,'native'),xmax = ggplot2::unit(xmax + textHVjust,'native'),
+          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
+    }
+  }else{}
+
+  # ============================================================================
   # print
   print(object)
 }

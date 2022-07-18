@@ -108,10 +108,10 @@ annoImage <- function(object = NULL,
           }
         }else{
           if(annoPos == 'top'){
-            ymax <- length(data_y) + relSideDist*length(data_y)
-            ymin <- length(data_y)
+            ymax <- length(unique(data_y)) + relSideDist*length(unique(data_y))
+            ymin <- length(unique(data_y))
           }else{
-            ymin <- -relSideDist*length(data_y)
+            ymin <- -relSideDist*length(unique(data_y))
             ymax <- 0
           }
         }
@@ -141,11 +141,11 @@ annoImage <- function(object = NULL,
           }
         }else{
           if(annoPos == 'left'){
-            xmin <- -relSideDist*length(data_x)
+            xmin <- -relSideDist*length(unique(data_x))
             xmax <- 0
           }else{
-            xmax <- length(data_x) + relSideDist*length(data_x)
-            xmin <- length(data_x)
+            xmax <- length(unique(data_x)) + relSideDist*length(unique(data_x))
+            xmin <- length(unique(data_x))
           }
         }
       }else{
