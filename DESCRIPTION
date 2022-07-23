@@ -1,5 +1,5 @@
 Package: jjAnno
-Title: An annotation package for ggplot plot
+Title: An annotation package for ggplot output
 Version: 0.0.2
 Authors@R: 
     person("Junjun", "Lao", , "3219030654@stu.cpu.edu.cn", role = c("aut", "cre"),
@@ -13,6 +13,7 @@ Imports:
     dplyr,
     ggiraphExtra,
     ggplot2,
+    grDevices,
     grid,
     magick,
     magrittr

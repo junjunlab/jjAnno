@@ -30,6 +30,10 @@
 
 \item{alpha}{The rect fill color alpha. Default(NULL).}
 
+\item{roundRect}{Whether add roundRect instead of rect. Default(FALSE).}
+
+\item{roundRadius}{The roundRect corner radius. Default(0.1).}
+
 \item{annoManual}{Whether annotate by yourself by supplying with x and y coordinates. Default(FALSE).}
 
 \item{addText}{Whether add text label on segment. Default(FALSE).}
@@ -51,6 +55,16 @@
 \item{hjust}{The text hjust. Default(NULL).}
 
 \item{vjust}{The text vjust. Default(NULL).}
+
+\item{textShift}{The text label shift size. Default(0).}
+
+\item{rotateRect}{Whether to rotate the rect annotation. Default(FALSE).}
+
+\item{normRectShift}{The "top" or "right" rotated rect shift. Default(0).}
+
+\item{rotatedRectShift}{The "botomn" or "left" rotated rect shift. Default(1).}
+
+\item{rectAngle}{Whether rotate the rect with specified degree. Default(NULL).}
 }
 \value{
 Return a ggplot object.
