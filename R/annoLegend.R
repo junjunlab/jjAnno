@@ -17,6 +17,9 @@
 #' @param fontfamily Legend text fontfamily. Default(NULL).
 #' @param fontface Legend text fontface. Default(NULL).
 #'
+#' @param vgap Vertical space between the legend entries. Default(1).
+#' @param hgap Horizontal space between the legend entries. Default(1).
+#'
 #' @return Return a ggplot object.
 #' @export
 #'
@@ -50,6 +53,8 @@ annoLegend <- function(object = NULL,
                        xPosition = NULL,
                        yPosition = NULL,
                        labels = NULL,
+                       vgap = 1,
+                       hgap = 1,
                        pch = NULL,
                        ncol = 1,
                        col = NULL,
@@ -96,6 +101,8 @@ annoLegend <- function(object = NULL,
                                                        ncol = ncol,
                                                        do.lines = do.lines,
                                                        lines.first = lines.first,
+                                                       vgap = vgap,
+                                                       hgap = hgap,
                                                        gp = grid::gpar(col = col,
                                                                        fill = fill,
                                                                        fontsize = textSize,

@@ -10,6 +10,8 @@ annoLegend(
   xPosition = NULL,
   yPosition = NULL,
   labels = NULL,
+  vgap = 1,
+  hgap = 1,
   pch = NULL,
   ncol = 1,
   col = NULL,
@@ -31,6 +33,10 @@ annoLegend(
 \item{yPosition}{The x axis coordinate for the legend. Default(NULL).}
 
 \item{labels}{The legend text labels. Default(NULL).}
+
+\item{vgap}{Vertical space between the legend entries. Default(1).}
+
+\item{hgap}{Horizontal space between the legend entries. Default(1).}
 
 \item{pch}{Legend shape. Default(NULL).}
 
