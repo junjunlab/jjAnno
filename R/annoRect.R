@@ -15,6 +15,8 @@
 #' @param lty The rect line type. Default(NULL).
 #' @param lwd The rect line width. Default(NULL).
 #' @param alpha The rect fill color alpha. Default(NULL).
+#' @param roundRect Whether add roundRect instead of rect. Default(FALSE).
+#' @param roundRadius The roundRect corner radius. Default(0.1).
 #' @param annoManual Whether annotate by yourself by supplying with x and y coordinates. Default(FALSE).
 #' @param addText Whether add text label on segment. Default(FALSE).
 #' @param textCol The text colors. Default(NULL).
@@ -27,6 +29,16 @@
 #' @param hjust The text hjust. Default(NULL).
 #' @param vjust The text vjust. Default(NULL).
 #'
+#' @param textShift The text label shift size. Default(0).
+#' @param rotateRect Whether to rotate the rect annotation. Default(FALSE).
+#' @param normRectShift The "top" or "right" rotated rect shift. Default(0).
+#' @param rotatedRectShift The "botomn" or "left" rotated rect shift. Default(1).
+#' @param rectAngle Whether rotate the rect with specified degree. Default(NULL).
+#'
+#' @param myFacetGrou Your facet group name to be added with annotation when object is a faceted object. Default(NULL).
+#' @param aes_x = NULL You should supply the plot X mapping name when annotate a facetd plot. Default(NULL).
+#' @param aes_y = NULL You should supply the plot Y mapping name when annotate a facetd plot. Default(NULL).
+#'
 #' @return Return a ggplot object.
 #' @export
 #'
@@ -37,6 +49,7 @@
 #' # load data
 #' data(p)
 #' data(pgo)
+#' data(pdotfc)
 #'
 #' # default plot
 #' annoRect(object = p,
@@ -80,6 +93,8 @@ annoRect <- function(object = NULL,
                      lty = NULL,
                      lwd = NULL,
                      alpha = NULL,
+                     roundRect = FALSE,
+                     roundRadius = 0.1,
                      annoManual = FALSE,
                      addText = FALSE,
                      textCol = NULL,
@@ -89,15 +104,41 @@ annoRect <- function(object = NULL,
                      textLabel = NULL,
                      textRot = 0,
                      textHVjust = 0.2,
+                     textShift = 0,
                      hjust = NULL,
-                     vjust = NULL){
+                     vjust = NULL,
+                     rotateRect = FALSE,
+                     normRectShift = 0,
+                     rotatedRectShift = 1,
+                     rectAngle = NULL,
+                     myFacetGrou = NULL,
+                     aes_x = NULL,
+                     aes_y = NULL){
+  # ============================================================================
+  # facet group name
+  facetName <- names(object$facet$params$facets)
+
+  # specify a group
+  if(is.null(myFacetGrou) & !is.null(facetName)){
+    myFacetGrou <- unique(data[,facetName])[1]
+  }else if(!is.null(myFacetGrou) & !is.null(facetName)){
+    myFacetGrou <- myFacetGrou
+  }else{
+
+  }
+
   # ============================================================================
   # get data
   data <- object$data
 
   # get mapping variables
-  aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
-  aes_y <- ggiraphExtra::getMapping(object$mapping,"y")
+  if(is.null(facetName)){
+    aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
+    aes_y <- ggiraphExtra::getMapping(object$mapping,"y")
+  }else{
+    aes_x <- aes_x
+    aes_y <- aes_y
+  }
 
   # test variable type
   data_x <- data[,c(aes_x)]
@@ -225,6 +266,42 @@ annoRect <- function(object = NULL,
 
     nPoints <- max(length(xmin),length(ymin))
   }
+
+  # ============================================================================
+  # whether supply a rectAngle
+  if(!is.null(rectAngle)){
+    text_angle <- rectAngle
+  }else{
+    if(annoPos %in% c('top','botomn')){
+      # retrive text angle
+      text_angle <- object$theme$axis.text.x$angle
+    }else if(annoPos %in% c('left','right')){
+      # retrive text angle
+      text_angle <- object$theme$axis.text.y$angle
+    }
+
+    # test special degree
+    if(!is.null(text_angle)){
+      if(text_angle %in% c(0,90,180,270,360)){
+        text_angle <- 0
+      }else{
+        text_angle <- text_angle
+      }
+    }else{}
+  }
+
+  # ============================================================================
+  ## This function allows us to specify which facet to annotate
+  annotation_custom2 <- function(grob, xmin = -Inf, xmax = Inf,
+                                 ymin = -Inf, ymax = Inf, data){
+    ggplot2::layer(data = data, stat = StatIdentity, position = PositionIdentity,
+                   geom = ggplot2::GeomCustomAnn,
+                   inherit.aes = TRUE,
+                   params = list(grob = grob,
+                                 xmin = xmin, xmax = xmax,
+                                 ymin = ymin, ymax = ymax))
+  }
+
   # ============================================================================
   # color
   if(is.null(pCol) & is.null(pFill)){
@@ -242,69 +319,1044 @@ annoRect <- function(object = NULL,
   }
 
   # ============================================================================
-  if(annoPos %in% c('top','botomn')){
-    if(!is.list(yPosition)){
-      # plot
-      for (i in 1:nPoints)  {
-        object <- object +
-          # add points
-          ggplot2::annotation_custom(
-            grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
-                                                  fill = pFill[i],
-                                                  lty = lty,
-                                                  lwd = lwd,
-                                                  alpha = alpha)),
-            xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin,'native'),ymax = ggplot2::unit(ymax,'native'))
-      }
-    }else{
-      # plot
-      for (i in 1:nPoints)  {
-        object <- object +
-          # add points
-          ggplot2::annotation_custom(
-            grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
-                                                  fill = pFill[i],
-                                                  lty = lty,
-                                                  lwd = lwd,
-                                                  alpha = alpha)),
-            xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-      }
-    }
-  }else if(annoPos %in% c('left','right')){
-    if(!is.list(xPosition)){
-      # plot
-      for (i in 1:nPoints)  {
-        object <- object +
-          # add points
-          ggplot2::annotation_custom(
-            grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
-                                                  fill = pFill[i],
-                                                  lty = lty,
-                                                  lwd = lwd,
-                                                  alpha = alpha)),
-            xmin = ggplot2::unit(xmin,'native'),xmax = ggplot2::unit(xmax,'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-      }
-    }else{
-      # plot
-      for (i in 1:nPoints)  {
-        object <- object +
-          # add points
-          ggplot2::annotation_custom(
-            grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
-                                                  fill = pFill[i],
-                                                  lty = lty,
-                                                  lwd = lwd,
-                                                  alpha = alpha)),
-            xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-      }
-    }
+  # if(roundRect == FALSE){
+  #   if(annoPos %in% c('top','botomn')){
+  #     if(!is.list(yPosition)){
+  #       ####################################
+  #       # whether totate rect
+  #       if(rotateRect == FALSE){
+  #         # plot
+  #         for (i in 1:nPoints)  {
+  #           object <- object +
+  #             # add points
+  #             ggplot2::annotation_custom(
+  #               grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                     fill = pFill[i],
+  #                                                     lty = lty,
+  #                                                     lwd = lwd,
+  #                                                     alpha = alpha)),
+  #               xmin = ggplot2::unit(xmin[i],'native'),
+  #               xmax = ggplot2::unit(xmax[i],'native'),
+  #               ymin = ggplot2::unit(ymin,'native'),
+  #               ymax = ggplot2::unit(ymax,'native'))
+  #         }
+  #       }else{
+  #         ####################################
+  #         # rotate rect
+  #         if(annoPos == 'top'){
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(x = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1),
+  #                                          y = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
+  #                 xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
+  #                 ymin = ggplot2::unit(ymin,'native'),
+  #                 ymax = ggplot2::unit(ymax,'native'))
+  #
+  #           }
+  #         }else{
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(x = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1),
+  #                                          y = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
+  #                 xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
+  #                 ymin = ggplot2::unit(ymin,'native'),
+  #                 ymax = ggplot2::unit(ymax,'native'))
+  #
+  #           }
+  #         }
+  #       }
+  #     }else{
+  #       ####################################
+  #       # whether totate rect
+  #       if(rotateRect == FALSE){
+  #         # plot
+  #         for (i in 1:nPoints)  {
+  #           object <- object +
+  #             # add points
+  #             ggplot2::annotation_custom(
+  #               grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                     fill = pFill[i],
+  #                                                     lty = lty,
+  #                                                     lwd = lwd,
+  #                                                     alpha = alpha)),
+  #               xmin = ggplot2::unit(xmin[i],'native'),
+  #               xmax = ggplot2::unit(xmax[i],'native'),
+  #               ymin = ggplot2::unit(ymin[i],'native'),
+  #               ymax = ggplot2::unit(ymax[i],'native'))
+  #         }
+  #       }else{
+  #         ####################################
+  #         # rotate rect
+  #         if(annoPos == 'top'){
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(x = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1),
+  #                                          y = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
+  #                 xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
+  #                 ymin = ggplot2::unit(ymin[i],'native'),
+  #                 ymax = ggplot2::unit(ymax[i],'native'))
+  #
+  #           }
+  #         }else{
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(x = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+  #                                                1),
+  #                                          y = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
+  #                 xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
+  #                 ymin = ggplot2::unit(ymin[i],'native'),
+  #                 ymax = ggplot2::unit(ymax[i],'native'))
+  #
+  #           }
+  #         }
+  #       }
+  #     }
+  #   }else if(annoPos %in% c('left','right')){
+  #     if(!is.list(xPosition)){
+  #       ####################################
+  #       # whether totate rect
+  #       if(rotateRect == FALSE){
+  #         # plot
+  #         for (i in 1:nPoints)  {
+  #           object <- object +
+  #             # add points
+  #             ggplot2::annotation_custom(
+  #               grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                     fill = pFill[i],
+  #                                                     lty = lty,
+  #                                                     lwd = lwd,
+  #                                                     alpha = alpha)),
+  #               xmin = ggplot2::unit(xmin,'native'),
+  #               xmax = ggplot2::unit(xmax,'native'),
+  #               ymin = ggplot2::unit(ymin[i],'native'),
+  #               ymax = ggplot2::unit(ymax[i],'native'))
+  #         }
+  #       }else{
+  #         ####################################
+  #         # rotate rect
+  #         if(annoPos == 'left'){
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(y = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1),
+  #                                          x = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin,'native'),
+  #                 xmax = ggplot2::unit(xmax,'native'),
+  #                 ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
+  #                 ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+  #
+  #           }
+  #         }else{
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(y = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1),
+  #                                          x = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin,'native'),
+  #                 xmax = ggplot2::unit(xmax,'native'),
+  #                 ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
+  #                 ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+  #
+  #           }
+  #         }
+  #       }
+  #     }else{
+  #       ####################################
+  #       # whether totate rect
+  #       if(rotateRect == FALSE){
+  #         # plot
+  #         for (i in 1:nPoints)  {
+  #           object <- object +
+  #             # add points
+  #             ggplot2::annotation_custom(
+  #               grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                     fill = pFill[i],
+  #                                                     lty = lty,
+  #                                                     lwd = lwd,
+  #                                                     alpha = alpha)),
+  #               xmin = ggplot2::unit(xmin[i],'native'),
+  #               xmax = ggplot2::unit(xmax[i],'native'),
+  #               ymin = ggplot2::unit(ymin[i],'native'),
+  #               ymax = ggplot2::unit(ymax[i],'native'))
+  #         }
+  #       }else{
+  #         ####################################
+  #         # rotate rect
+  #         if(annoPos == 'left'){
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(y = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1),
+  #                                          x = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i],'native'),
+  #                 xmax = ggplot2::unit(xmax[i],'native'),
+  #                 ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
+  #                 ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+  #
+  #           }
+  #         }else{
+  #           for (i in 1:nPoints)  {
+  #             object <- object +
+  #               ggplot2::annotation_custom(
+  #                 grob = grid::polygonGrob(y = c(0,
+  #                                                tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+  #                                                1),
+  #                                          x = c(0,1,1,0),
+  #                                          gp = grid::gpar(fill = pFill[i],
+  #                                                          col = pCol[i],
+  #                                                          lty = lty,
+  #                                                          lwd = lwd,
+  #                                                          alpha = alpha)),
+  #                 xmin = ggplot2::unit(xmin[i],'native'),
+  #                 xmax = ggplot2::unit(xmax[i],'native'),
+  #                 ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
+  #                 ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+  #
+  #           }
+  #         }
+  #       }
+  #     }
+  #   }else{}
+  # }else{
+  #   # round rect corner
+  #   if(annoPos %in% c('top','botomn')){
+  #     if(!is.list(yPosition)){
+  #       # plot
+  #       for (i in 1:nPoints)  {
+  #         object <- object +
+  #           # add points
+  #           ggplot2::annotation_custom(
+  #             grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                        fill = pFill[i],
+  #                                                        lty = lty,
+  #                                                        lwd = lwd,
+  #                                                        alpha = alpha),
+  #                                        r = ggplot2::unit(roundRadius, "snpc")),
+  #             xmin = ggplot2::unit(xmin[i],'native'),
+  #             xmax = ggplot2::unit(xmax[i],'native'),
+  #             ymin = ggplot2::unit(ymin,'native'),
+  #             ymax = ggplot2::unit(ymax,'native'))
+  #       }
+  #     }else{
+  #       # plot
+  #       for (i in 1:nPoints)  {
+  #         object <- object +
+  #           # add points
+  #           ggplot2::annotation_custom(
+  #             grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                        fill = pFill[i],
+  #                                                        lty = lty,
+  #                                                        lwd = lwd,
+  #                                                        alpha = alpha),
+  #                                        r = ggplot2::unit(roundRadius, "snpc")),
+  #             xmin = ggplot2::unit(xmin[i],'native'),
+  #             xmax = ggplot2::unit(xmax[i],'native'),
+  #             ymin = ggplot2::unit(ymin[i],'native'),
+  #             ymax = ggplot2::unit(ymax[i],'native'))
+  #       }
+  #     }
+  #   }else if(annoPos %in% c('left','right')){
+  #     if(!is.list(xPosition)){
+  #       # plot
+  #       for (i in 1:nPoints)  {
+  #         object <- object +
+  #           # add points
+  #           ggplot2::annotation_custom(
+  #             grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                        fill = pFill[i],
+  #                                                        lty = lty,
+  #                                                        lwd = lwd,
+  #                                                        alpha = alpha),
+  #                                        r = ggplot2::unit(roundRadius, "snpc")),
+  #             xmin = ggplot2::unit(xmin,'native'),
+  #             xmax = ggplot2::unit(xmax,'native'),
+  #             ymin = ggplot2::unit(ymin[i],'native'),
+  #             ymax = ggplot2::unit(ymax[i],'native'))
+  #       }
+  #     }else{
+  #       # plot
+  #       for (i in 1:nPoints)  {
+  #         object <- object +
+  #           # add points
+  #           ggplot2::annotation_custom(
+  #             grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+  #                                                        fill = pFill[i],
+  #                                                        lty = lty,
+  #                                                        lwd = lwd,
+  #                                                        alpha = alpha),
+  #                                        r = ggplot2::unit(roundRadius, "snpc")),
+  #             xmin = ggplot2::unit(xmin[i],'native'),
+  #             xmax = ggplot2::unit(xmax[i],'native'),
+  #             ymin = ggplot2::unit(ymin[i],'native'),
+  #             ymax = ggplot2::unit(ymax[i],'native'))
+  #       }
+  #     }
+  #   }else{}
+  # }
 
-  }else{}
+  # ============================================================================
+  if(is.null(facetName)){
+    if(roundRect == FALSE){
+      if(annoPos %in% c('top','botomn')){
+        if(!is.list(yPosition)){
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                ggplot2::annotation_custom(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  xmin = ggplot2::unit(xmin[i],'native'),
+                  xmax = ggplot2::unit(xmax[i],'native'),
+                  ymin = ggplot2::unit(ymin,'native'),
+                  ymax = ggplot2::unit(ymax,'native'))
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'top'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
+                    xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
+                    ymin = ggplot2::unit(ymin,'native'),
+                    ymax = ggplot2::unit(ymax,'native'))
 
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
+                    xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
+                    ymin = ggplot2::unit(ymin,'native'),
+                    ymax = ggplot2::unit(ymax,'native'))
+
+              }
+            }
+          }
+        }else{
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                ggplot2::annotation_custom(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  xmin = ggplot2::unit(xmin[i],'native'),
+                  xmax = ggplot2::unit(xmax[i],'native'),
+                  ymin = ggplot2::unit(ymin[i],'native'),
+                  ymax = ggplot2::unit(ymax[i],'native'))
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'top'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
+                    xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
+                    ymin = ggplot2::unit(ymin[i],'native'),
+                    ymax = ggplot2::unit(ymax[i],'native'))
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
+                    xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
+                    ymin = ggplot2::unit(ymin[i],'native'),
+                    ymax = ggplot2::unit(ymax[i],'native'))
+
+              }
+            }
+          }
+        }
+      }else if(annoPos %in% c('left','right')){
+        if(!is.list(xPosition)){
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                ggplot2::annotation_custom(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  xmin = ggplot2::unit(xmin,'native'),
+                  xmax = ggplot2::unit(xmax,'native'),
+                  ymin = ggplot2::unit(ymin[i],'native'),
+                  ymax = ggplot2::unit(ymax[i],'native'))
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'left'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin,'native'),
+                    xmax = ggplot2::unit(xmax,'native'),
+                    ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
+                    ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin,'native'),
+                    xmax = ggplot2::unit(xmax,'native'),
+                    ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
+                    ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+
+              }
+            }
+          }
+        }else{
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                ggplot2::annotation_custom(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  xmin = ggplot2::unit(xmin[i],'native'),
+                  xmax = ggplot2::unit(xmax[i],'native'),
+                  ymin = ggplot2::unit(ymin[i],'native'),
+                  ymax = ggplot2::unit(ymax[i],'native'))
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'left'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i],'native'),
+                    xmax = ggplot2::unit(xmax[i],'native'),
+                    ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
+                    ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  ggplot2::annotation_custom(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = ggplot2::unit(xmin[i],'native'),
+                    xmax = ggplot2::unit(xmax[i],'native'),
+                    ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
+                    ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+
+              }
+            }
+          }
+        }
+      }else{}
+    }else{
+      # round rect corner
+      if(annoPos %in% c('top','botomn')){
+        if(!is.list(yPosition)){
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              ggplot2::annotation_custom(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                xmin = ggplot2::unit(xmin[i],'native'),
+                xmax = ggplot2::unit(xmax[i],'native'),
+                ymin = ggplot2::unit(ymin,'native'),
+                ymax = ggplot2::unit(ymax,'native'))
+          }
+        }else{
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              ggplot2::annotation_custom(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                xmin = ggplot2::unit(xmin[i],'native'),
+                xmax = ggplot2::unit(xmax[i],'native'),
+                ymin = ggplot2::unit(ymin[i],'native'),
+                ymax = ggplot2::unit(ymax[i],'native'))
+          }
+        }
+      }else if(annoPos %in% c('left','right')){
+        if(!is.list(xPosition)){
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              ggplot2::annotation_custom(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                xmin = ggplot2::unit(xmin,'native'),
+                xmax = ggplot2::unit(xmax,'native'),
+                ymin = ggplot2::unit(ymin[i],'native'),
+                ymax = ggplot2::unit(ymax[i],'native'))
+          }
+        }else{
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              ggplot2::annotation_custom(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                xmin = ggplot2::unit(xmin[i],'native'),
+                xmax = ggplot2::unit(xmax[i],'native'),
+                ymin = ggplot2::unit(ymin[i],'native'),
+                ymax = ggplot2::unit(ymax[i],'native'))
+          }
+        }
+      }else{}
+    }
+  }else{
+    # ==================================================
+    # facet data
+    facet_data <- data.frame(myFacetGrou)
+    colnames(facet_data) <- facetName
+
+    # facet plot
+    if(roundRect == FALSE){
+      if(annoPos %in% c('top','botomn')){
+        if(!is.list(yPosition)){
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                annotation_custom2(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  data = facet_data,
+                  xmin = xmin[i],
+                  xmax = xmax[i],
+                  ymin = ymin,
+                  ymax = ymax)
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'top'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin[i] - normRectShift,
+                    xmax = xmax[i] - normRectShift,
+                    ymin = ymin,
+                    ymax = ymax)
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin[i] - rotatedRectShift,
+                    xmax = xmax[i] - rotatedRectShift,
+                    ymin = ymin,
+                    ymax = ymax)
+
+              }
+            }
+          }
+        }else{
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                annotation_custom2(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  data = facet_data,
+                  xmin = xmin[i],
+                  xmax = xmax[i],
+                  ymin = ymin[i],
+                  ymax = ymax[i])
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'top'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin[i] - normRectShift,
+                    xmax = xmax[i] - normRectShift,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(x = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(xmax[i] - xmin[i]),
+                                                   1),
+                                             y = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    xmin = xmin[i] - rotatedRectShift,
+                    xmax = xmax[i] - rotatedRectShift,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
+
+              }
+            }
+          }
+        }
+      }else if(annoPos %in% c('left','right')){
+        if(!is.list(xPosition)){
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                annotation_custom2(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  data = facet_data,
+                  xmin = xmin,
+                  xmax = xmax,
+                  ymin = ymin[i],
+                  ymax = ymax[i])
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'left'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i] - rotatedRectShift,
+                    ymax = ymax[i] - rotatedRectShift)
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i] - normRectShift,
+                    ymax = ymax[i] - normRectShift)
+              }
+            }
+          }
+        }else{
+          ####################################
+          # whether totate rect
+          if(rotateRect == FALSE){
+            # plot
+            for (i in 1:nPoints)  {
+              object <- object +
+                # add points
+                annotation_custom2(
+                  grob = grid::rectGrob(gp = grid::gpar(col = pCol[i],
+                                                        fill = pFill[i],
+                                                        lty = lty,
+                                                        lwd = lwd,
+                                                        alpha = alpha)),
+                  data = facet_data,
+                  xmin = xmin[i],
+                  xmax = xmax[i],
+                  ymin = ymin[i],
+                  ymax = ymax[i])
+            }
+          }else{
+            ####################################
+            # rotate rect
+            if(annoPos == 'left'){
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i] - normRectShift,
+                    ymax = ymax[i] - normRectShift)
+
+              }
+            }else{
+              for (i in 1:nPoints)  {
+                object <- object +
+                  annotation_custom2(
+                    grob = grid::polygonGrob(y = c(0,
+                                                   tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1 + tan(pi*((90 - text_angle)/180))/abs(ymax[i] - ymin[i]),
+                                                   1),
+                                             x = c(0,1,1,0),
+                                             gp = grid::gpar(fill = pFill[i],
+                                                             col = pCol[i],
+                                                             lty = lty,
+                                                             lwd = lwd,
+                                                             alpha = alpha)),
+                    data = facet_data,
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i] - rotatedRectShift,
+                    ymax = ymax[i] - rotatedRectShift)
+
+              }
+            }
+          }
+        }
+      }else{}
+    }else{
+      # round rect corner
+      if(annoPos %in% c('top','botomn')){
+        if(!is.list(yPosition)){
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              annotation_custom2(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                data = facet_data,
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin,
+                ymax = ymax)
+          }
+        }else{
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              annotation_custom2(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                data = facet_data,
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin[i],
+                ymax = ymax[i])
+          }
+        }
+      }else if(annoPos %in% c('left','right')){
+        if(!is.list(xPosition)){
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              annotation_custom2(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                data = facet_data,
+                xmin = xmin,
+                xmax = xmax,
+                ymin = ymin[i],
+                ymax = ymax[i])
+          }
+        }else{
+          # plot
+          for (i in 1:nPoints)  {
+            object <- object +
+              # add points
+              annotation_custom2(
+                grob = grid::roundrectGrob(gp = grid::gpar(col = pCol[i],
+                                                           fill = pFill[i],
+                                                           lty = lty,
+                                                           lwd = lwd,
+                                                           alpha = alpha),
+                                           r = ggplot2::unit(roundRadius, "snpc")),
+                data = facet_data,
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin[i],
+                ymax = ymax[i])
+          }
+        }
+      }else{}
+    }
+  }
   # ============================================================================
   # text color
   if(is.null(textCol)){
@@ -321,46 +1373,101 @@ annoRect <- function(object = NULL,
     textLabel <- groupInfo[,1]
   }
 
+
+  # ==================================
   # whether add text label
-  if(addText == TRUE & annoPos %in% c('top','botomn')){
-    # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add text
-        ggplot2::annotation_custom(
-          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
-                                                fontsize = textSize,
-                                                fontfamily = fontfamily,
-                                                fontface = fontface),
-                                hjust = hjust,
-                                vjust = vjust,
-                                label = textLabel[i],
-                                check.overlap = T,
-                                just = "centre",
-                                rot = textRot),
-          xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-          ymin = ggplot2::unit(ymin + textHVjust,'native'),ymax = ggplot2::unit(ymax + textHVjust,'native'))
-    }
-  }else if(addText == TRUE & annoPos %in% c('left','right')){
-    # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add text
-        ggplot2::annotation_custom(
-          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
-                                                fontsize = textSize,
-                                                fontfamily = fontfamily,
-                                                fontface = fontface),
-                                hjust = hjust,
-                                vjust = vjust,
-                                label = textLabel[i],
-                                check.overlap = T,
-                                just = "centre",
-                                rot = textRot),
-          xmin = ggplot2::unit(xmin + textHVjust,'native'),xmax = ggplot2::unit(xmax + textHVjust,'native'),
-          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-    }
-  }else{}
+  if(is.null(facetName)){
+    if(addText == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          ggplot2::annotation_custom(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            xmin = ggplot2::unit(xmin[i] + textShift,'native'),
+            xmax = ggplot2::unit(xmax[i] + textShift,'native'),
+            ymin = ggplot2::unit(ymin + textHVjust,'native'),
+            ymax = ggplot2::unit(ymax + textHVjust,'native'))
+      }
+    }else if(addText == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          ggplot2::annotation_custom(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            xmin = ggplot2::unit(xmin + textHVjust,'native'),
+            xmax = ggplot2::unit(xmax + textHVjust,'native'),
+            ymin = ggplot2::unit(ymin[i] + textShift,'native'),
+            ymax = ggplot2::unit(ymax[i] + textShift,'native'))
+      }
+    }else{}
+  }else{
+    # ====================================
+    if(addText == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          annotation_custom2(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            data = facet_data,
+            xmin = xmin[i] + textShift,
+            xmax = xmax[i] + textShift,
+            ymin = ymin + textHVjust,
+            ymax = ymax + textHVjust)
+      }
+    }else if(addText == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          annotation_custom2(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            data = facet_data,
+            xmin = xmin + textHVjust,
+            xmax = xmax + textHVjust,
+            ymin = ymin[i] + textShift,
+            ymax = ymax[i] + textShift)
+      }
+    }else{}
+  }
 
   # ============================================================================
   # print
@@ -373,7 +1480,17 @@ annoRect <- function(object = NULL,
 #' This is a test data for this package
 #' test data describtion
 #'
+#' @name pdotfc
+#' @docType data
+#' @author Junjun Lao
+"pdotfc"
+
+###############################
+#' This is a test data for this package
+#' test data describtion
+#'
 #' @name pgo
 #' @docType data
 #' @author Junjun Lao
 "pgo"
+

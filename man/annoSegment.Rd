@@ -61,6 +61,12 @@
 \item{hjust}{The text hjust. Default(NULL).}
 
 \item{vjust}{The text vjust. Default(NULL).}
+
+\item{myFacetGrou}{Your facet group name to be added with annotation when object is a faceted object. Default(NULL).}
+
+\item{aes_x}{= NULL You should supply the plot X mapping name when annotate a facetd plot. Default(NULL).}
+
+\item{aes_y}{= NULL You should supply the plot Y mapping name when annotate a facetd plot. Default(NULL).}
 }
 \value{
 Return a ggplot object.

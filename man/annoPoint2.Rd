@@ -3,33 +3,6 @@
 \name{annoPoint2}
 \alias{annoPoint2}
 \title{annoPoint2}
-\usage{
-annoPoint2(
-  object = NULL,
-  relSideDist = 0.1,
-  aesGroup = FALSE,
-  aesShape = FALSE,
-  aesGroName = NULL,
-  annoPos = "top",
-  xPosition = NULL,
-  yPosition = NULL,
-  pCol = NULL,
-  pFill = NULL,
-  ptSize = 3,
-  ptShape = NULL,
-  annoManual = FALSE,
-  addText = FALSE,
-  textCol = NULL,
-  textSize = NULL,
-  fontfamily = NULL,
-  fontface = NULL,
-  textLabel = NULL,
-  textRot = 0,
-  textHVjust = 0.2,
-  hjust = NULL,
-  vjust = NULL
-)
-}
 \arguments{
 \item{object}{Your ggplot list. Default(NULL).}
 
@@ -76,6 +49,12 @@ annoPoint2(
 \item{hjust}{The text hjust. Default(NULL).}
 
 \item{vjust}{The text vjust. Default(NULL).}
+
+\item{myFacetGrou}{Your facet group name to be added with annotation when object is a faceted object. Default(NULL).}
+
+\item{aes_x}{= NULL You should supply the plot X mapping name when annotate a facetd plot. Default(NULL).}
+
+\item{aes_y}{= NULL You should supply the plot Y mapping name when annotate a facetd plot. Default(NULL).}
 }
 \value{
 Return a ggplot object.

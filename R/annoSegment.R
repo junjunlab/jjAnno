@@ -32,6 +32,10 @@
 #' @param hjust The text hjust. Default(NULL).
 #' @param vjust The text vjust. Default(NULL).
 #'
+#' @param myFacetGrou Your facet group name to be added with annotation when object is a faceted object. Default(NULL).
+#' @param aes_x = NULL You should supply the plot X mapping name when annotate a facetd plot. Default(NULL).
+#' @param aes_y = NULL You should supply the plot Y mapping name when annotate a facetd plot. Default(NULL).
+#'
 #' @return Return a ggplot object.
 #' @export
 #'
@@ -98,14 +102,35 @@ annoSegment <- function(object = NULL,
                         textRot = 0,
                         textHVjust = 0.2,
                         hjust = NULL,
-                        vjust = NULL){
+                        vjust = NULL,
+                        myFacetGrou = NULL,
+                        aes_x = NULL,
+                        aes_y = NULL){
+  # ============================================================================
+  # facet group name
+  facetName <- names(object$facet$params$facets)
+
+  # specify a group
+  if(is.null(myFacetGrou) & !is.null(facetName)){
+    myFacetGrou <- unique(data[,facetName])[1]
+  }else if(!is.null(myFacetGrou) & !is.null(facetName)){
+    myFacetGrou <- myFacetGrou
+  }else{
+
+  }
+
   # ============================================================================
   # get data
   data <- object$data
 
   # get mapping variables
-  aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
-  aes_y <- ggiraphExtra::getMapping(object$mapping,"y")
+  if(is.null(facetName)){
+    aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
+    aes_y <- ggiraphExtra::getMapping(object$mapping,"y")
+  }else{
+    aes_x <- aes_x
+    aes_y <- aes_y
+  }
 
   # test variable type
   data_x <- data[,c(aes_x)]
@@ -245,6 +270,19 @@ annoSegment <- function(object = NULL,
     nPoints <- max(length(xmin),length(ymin))
   }
 
+
+  # ============================================================================
+  ## This function allows us to specify which facet to annotate
+  annotation_custom2 <- function(grob, xmin = -Inf, xmax = Inf,
+                                 ymin = -Inf, ymax = Inf, data){
+    ggplot2::layer(data = data, stat = StatIdentity, position = PositionIdentity,
+                   geom = ggplot2::GeomCustomAnn,
+                   inherit.aes = TRUE,
+                   params = list(grob = grob,
+                                 xmin = xmin, xmax = xmax,
+                                 ymin = ymin, ymax = ymax))
+  }
+
   # ============================================================================
   # color
   if(is.null(pCol)){
@@ -254,40 +292,93 @@ annoSegment <- function(object = NULL,
   }
 
   # ============================================================================
-  # plot
-  if(annoPos %in% c('top','botomn')){
+  if(is.null(facetName)){
     # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add segments
-        ggplot2::annotation_custom(
-          grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
-                                                    fill = pCol[i],
-                                                    lty = lty,
-                                                    lwd = lwd,
-                                                    lineend = lineend,
-                                                    alpha = alpha),
-                                    arrow = mArrow),
-          xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-          ymin = ggplot2::unit(ymin,'native'),ymax = ggplot2::unit(ymax,'native'))
-    }
-  }else if(annoPos %in% c('left','right')){
+    if(annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add segments
+          ggplot2::annotation_custom(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
+                                                      fill = pCol[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = mArrow),
+            xmin = ggplot2::unit(xmin[i],'native'),
+            xmax = ggplot2::unit(xmax[i],'native'),
+            ymin = ggplot2::unit(ymin,'native'),
+            ymax = ggplot2::unit(ymax,'native'))
+      }
+    }else if(annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add segments
+          ggplot2::annotation_custom(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
+                                                      fill = pCol[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = mArrow),
+            xmin = ggplot2::unit(xmin,'native'),
+            xmax = ggplot2::unit(xmax,'native'),
+            ymin = ggplot2::unit(ymin[i],'native'),
+            ymax = ggplot2::unit(ymax[i],'native'))
+      }
+    }else{}
+  }else{
+    # ==========================================
+    # facet data
+    facet_data <- data.frame(myFacetGrou)
+    colnames(facet_data) <- facetName
+
     # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add segments
-        ggplot2::annotation_custom(
-          grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
-                                                    fill = pCol[i],
-                                                    lty = lty,
-                                                    lwd = lwd,
-                                                    lineend = lineend,
-                                                    alpha = alpha),
-                                    arrow = mArrow),
-          xmin = ggplot2::unit(xmin,'native'),xmax = ggplot2::unit(xmax,'native'),
-          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-    }
-  }else{}
+    if(annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add segments
+          annotation_custom2(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
+                                                      fill = pCol[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = mArrow),
+            data = facet_data,
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin,
+            ymax = ymax)
+      }
+    }else if(annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add segments
+          annotation_custom2(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol[i],
+                                                      fill = pCol[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = mArrow),
+            data = facet_data,
+            xmin = xmin,
+            xmax = xmax,
+            ymin = ymin[i],
+            ymax = ymax[i])
+      }
+    }else{}
+  }
+
 
   # ============================================================================
   # whether add branch
@@ -315,39 +406,86 @@ annoSegment <- function(object = NULL,
   }
 
   # ============================================================================
-  if(addBranch == TRUE & annoPos %in% c('top','botomn')){
-    # plot
-    for (i in 1:(2*nPoints))  {
-      object <- object +
-        # add segments
-        ggplot2::annotation_custom(
-          grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
-                                                    fill = pCol2[i],
-                                                    lty = lty,
-                                                    lwd = lwd,
-                                                    lineend = lineend,
-                                                    alpha = alpha),
-                                    arrow = bArrow),
-          xmin = ggplot2::unit(brXmin[i],'native'),xmax = ggplot2::unit(brXmax[i],'native'),
-          ymin = ggplot2::unit(brYmin,'native'),ymax = ggplot2::unit(brYmax,'native'))
-    }
-  }else if(addBranch == TRUE & annoPos %in% c('left','right')){
-    # plot
-    for (i in 1:(2*nPoints))  {
-      object <- object +
-        # add segments
-        ggplot2::annotation_custom(
-          grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
-                                                    fill = pCol2[i],
-                                                    lty = lty,
-                                                    lwd = lwd,
-                                                    lineend = lineend,
-                                                    alpha = alpha),
-                                    arrow = bArrow),
-          xmin = ggplot2::unit(brXmin,'native'),xmax = ggplot2::unit(brXmax,'native'),
-          ymin = ggplot2::unit(brYmin[i],'native'),ymax = ggplot2::unit(brYmax[i],'native'))
-    }
-  }else{}
+  if(is.null(facetName)){
+    if(addBranch == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:(2*nPoints))  {
+        object <- object +
+          # add segments
+          ggplot2::annotation_custom(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
+                                                      fill = pCol2[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = bArrow),
+            xmin = ggplot2::unit(brXmin[i],'native'),
+            xmax = ggplot2::unit(brXmax[i],'native'),
+            ymin = ggplot2::unit(brYmin,'native'),
+            ymax = ggplot2::unit(brYmax,'native'))
+      }
+    }else if(addBranch == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:(2*nPoints))  {
+        object <- object +
+          # add segments
+          ggplot2::annotation_custom(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
+                                                      fill = pCol2[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = bArrow),
+            xmin = ggplot2::unit(brXmin,'native'),
+            xmax = ggplot2::unit(brXmax,'native'),
+            ymin = ggplot2::unit(brYmin[i],'native'),
+            ymax = ggplot2::unit(brYmax[i],'native'))
+      }
+    }else{}
+  }else{
+    # =================================
+    if(addBranch == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:(2*nPoints))  {
+        object <- object +
+          # add segments
+          annotation_custom2(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
+                                                      fill = pCol2[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = bArrow),
+            data = facet_data,
+            xmin = brXmin[i],
+            xmax = brXmax[i],
+            ymin = brYmin,
+            ymax = brYmax)
+      }
+    }else if(addBranch == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:(2*nPoints))  {
+        object <- object +
+          # add segments
+          annotation_custom2(
+            grob = grid::segmentsGrob(gp = grid::gpar(col = pCol2[i],
+                                                      fill = pCol2[i],
+                                                      lty = lty,
+                                                      lwd = lwd,
+                                                      lineend = lineend,
+                                                      alpha = alpha),
+                                      arrow = bArrow),
+            data = facet_data,
+            xmin = brXmin,
+            xmax = brXmax,
+            ymin = brYmin[i],
+            ymax = brYmax[i])
+      }
+    }else{}
+  }
 
   # ============================================================================
   # text color
@@ -365,46 +503,100 @@ annoSegment <- function(object = NULL,
     textLabel <- groupInfo[,1]
   }
 
+  # ==================================
   # whether add text label
-  if(addText == TRUE & annoPos %in% c('top','botomn')){
-    # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add text
-        ggplot2::annotation_custom(
-          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
-                                                fontsize = textSize,
-                                                fontfamily = fontfamily,
-                                                fontface = fontface),
-                                hjust = hjust,
-                                vjust = vjust,
-                                label = textLabel[i],
-                                check.overlap = T,
-                                just = "centre",
-                                rot = textRot),
-          xmin = ggplot2::unit(xmin[i],'native'),xmax = ggplot2::unit(xmax[i],'native'),
-          ymin = ggplot2::unit(ymin + textHVjust,'native'),ymax = ggplot2::unit(ymax + textHVjust,'native'))
-    }
-  }else if(addText == TRUE & annoPos %in% c('left','right')){
-    # plot
-    for (i in 1:nPoints)  {
-      object <- object +
-        # add text
-        ggplot2::annotation_custom(
-          grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
-                                                fontsize = textSize,
-                                                fontfamily = fontfamily,
-                                                fontface = fontface),
-                                hjust = hjust,
-                                vjust = vjust,
-                                label = textLabel[i],
-                                check.overlap = T,
-                                just = "centre",
-                                rot = textRot),
-          xmin = ggplot2::unit(xmin + textHVjust,'native'),xmax = ggplot2::unit(xmax + textHVjust,'native'),
-          ymin = ggplot2::unit(ymin[i],'native'),ymax = ggplot2::unit(ymax[i],'native'))
-    }
-  }else{}
+  if(is.null(facetName)){
+    if(addText == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          ggplot2::annotation_custom(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            xmin = ggplot2::unit(xmin[i],'native'),
+            xmax = ggplot2::unit(xmax[i],'native'),
+            ymin = ggplot2::unit(ymin + textHVjust,'native'),
+            ymax = ggplot2::unit(ymax + textHVjust,'native'))
+      }
+    }else if(addText == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          ggplot2::annotation_custom(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            xmin = ggplot2::unit(xmin + textHVjust,'native'),
+            xmax = ggplot2::unit(xmax + textHVjust,'native'),
+            ymin = ggplot2::unit(ymin[i],'native'),
+            ymax = ggplot2::unit(ymax[i],'native'))
+      }
+    }else{}
+  }else{
+    # ===================================
+    if(addText == TRUE & annoPos %in% c('top','botomn')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          annotation_custom2(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            data = facet_data,
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin + textHVjust,
+            ymax = ymax + textHVjust)
+      }
+    }else if(addText == TRUE & annoPos %in% c('left','right')){
+      # plot
+      for (i in 1:nPoints)  {
+        object <- object +
+          # add text
+          annotation_custom2(
+            grob = grid::textGrob(gp = grid::gpar(col = textCol[i],
+                                                  fontsize = textSize,
+                                                  fontfamily = fontfamily,
+                                                  fontface = fontface),
+                                  hjust = hjust,
+                                  vjust = vjust,
+                                  label = textLabel[i],
+                                  check.overlap = T,
+                                  just = "centre",
+                                  rot = textRot),
+            data = facet_data,
+            xmin = xmin + textHVjust,
+            xmax = xmin + textHVjust,
+            ymin = ymin[i],
+            ymax = ymax[i])
+      }
+    }else{}
+  }
 
   # ============================================================================
   # print
