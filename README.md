@@ -27,4 +27,4 @@ An eaxmple shows here:
 
 More examples and details see:
 
-> **https://github.com/junjunlab/jjAnno/wiki/jjAnno-0.0.1**
+> **https://junjunlab.github.io/jjAnno-manual/**
