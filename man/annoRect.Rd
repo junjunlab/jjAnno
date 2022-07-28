@@ -71,6 +71,20 @@
 \item{aes_x}{= NULL You should supply the plot X mapping name when annotate a facetd plot. Default(NULL).}
 
 \item{aes_y}{= NULL You should supply the plot Y mapping name when annotate a facetd plot. Default(NULL).}
+
+\item{continuesRect}{Whether add gradient-color-rect. Default(FALSE).}
+
+\item{border}{Whether add border for gradient-color-rect. Default(FALSE).}
+
+\item{conRectCol}{The colors for gradient-color-rect. Default(NULL).}
+
+\item{conRectColBin}{The colors numbers for gradient-color-rect. Default(10).}
+
+\item{interpolate}{Whether blur the colors. Default(TRUE).}
+
+\item{revColV}{Whether ajust the colors orders vertically. Default(FALSE).}
+
+\item{revColH}{Whether ajust the colors orders horizontally. Default(FALSE).}
 }
 \value{
 Return a ggplot object.
