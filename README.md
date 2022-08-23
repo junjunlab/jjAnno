@@ -17,6 +17,10 @@ You can install the development version of jjAnno like so:
 devtools::install_github("junjunlab/jjAnno")
 ```
 
+## Citation
+
+> Jun Z (2022). *jjAnno: An Annotation Package for GGplot Plot.*  https://github.com/junjunlab/jjAnno, https://junjunlab.github.io/jjAnno-manual/
+
 ## Example
 
 An eaxmple shows here:
