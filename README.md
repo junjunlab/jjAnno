@@ -13,9 +13,16 @@ Here I provide a package **jjAnno** that you can add different annotaions includ
 You can install the development version of jjAnno like so:
 
 ``` r
+# install from cran
+install.packages("jjAnno")
+
 # install.packages("devtools")
 devtools::install_github("junjunlab/jjAnno")
 ```
+
+## Citation
+
+> Jun Z (2022). *jjAnno: An Annotation Package for GGplot Plot.*  https://github.com/junjunlab/jjAnno, https://junjunlab.github.io/jjAnno-manual/
 
 ## Example
 
