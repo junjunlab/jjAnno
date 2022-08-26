@@ -24,7 +24,7 @@
 #' @export
 #'
 #' @examples
-#'# ===============================
+#'\donttest{# ===============================
 #'# test function
 #'
 #'# load test data
@@ -51,6 +51,7 @@
 #'             yPosition = c(10.8,11.5),
 #'             addBorder = TRUE,
 #'             lwd = 2.5)
+#'}
 
 
 # define function

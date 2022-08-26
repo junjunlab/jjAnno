@@ -20,7 +20,7 @@
 #' # ===============================
 #' # test function
 #'
-#' # load data
+#'\donttest{ # load data
 #' data(p)
 #'
 #' img1 <- system.file("extdata/animal-img/", "1.jpg", package = "jjAnno")
@@ -59,6 +59,7 @@
 #'           images = imgs,
 #'           xPosition = c(11,11.8),
 #'           segWidth = 0.8)
+#'}
 
 # define function
 annoImage <- function(object = NULL,

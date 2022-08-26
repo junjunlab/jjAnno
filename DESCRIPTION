@@ -1,10 +1,10 @@
 Package: jjAnno
-Title: An annotation package for ggplot output
+Title: An Annotation Package for 'ggplot2' Output
 Version: 0.0.3
 Authors@R: 
     person("Junjun", "Lao", , "3219030654@stu.cpu.edu.cn", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package is developed to make plot more elegant with some multiple types annotations.
+           comment = c(ORCID = "0000-0001-7692-9105"))
+Description: To make the plot more elegant with some multiple type annotations including 'rect', 'text', 'point', 'image' and 'segment' elements.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -19,4 +19,6 @@ Imports:
     magrittr
 Depends: 
     R (>= 2.10)
+URL: https://github.com/junjunlab/jjAnno
+BugReports: https://github.com/junjunlab/jjAnno/issues
 LazyData: true

@@ -63,7 +63,7 @@ Return a ggplot object.
 This function is used to add triangle annotations in plot.
 }
 \examples{
-# ===============================
+\donttest{# ===============================
 # test function
 
 # load test data
@@ -90,6 +90,7 @@ annoTriangle(object = p1,
             yPosition = c(10.8,11.5),
             addBorder = TRUE,
             lwd = 2.5)
+}
 }
 \author{
 Junjun Lao

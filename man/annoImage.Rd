@@ -48,7 +48,7 @@ This function is used to add image annotations in plot.
 # ===============================
 # test function
 
-# load data
+\donttest{ # load data
 data(p)
 
 img1 <- system.file("extdata/animal-img/", "1.jpg", package = "jjAnno")
@@ -87,6 +87,7 @@ annoImage(object = p,
           images = imgs,
           xPosition = c(11,11.8),
           segWidth = 0.8)
+}
 }
 \author{
 Junjun Lao
