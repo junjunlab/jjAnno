@@ -1,5 +1,5 @@
 
-# jjAnno <img src="man/jjAnno-logo.svg" align="right" height="200" />
+# jjAnno <img src="man/jjAnno-logo.png" align="right" height="200" />
 
 <!-- badges: start -->
 
