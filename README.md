@@ -37,7 +37,7 @@ More examples and details see:
 
 > **https://junjunlab.github.io/jjAnno-manual/**
 
-## Relatedblogs
+## Related blogs
 
 > - [**jjAnno 优雅的帮你添加注释**](https://mp.weixin.qq.com/s?__biz=MzkyMTI1MTYxNA==&mid=2247502697&idx=1&sn=5e1b60508a093e2b36b13da75e682b03&chksm=c184f118f6f3780e90611af0a2747da780b60589d9f353e81abb3f9004659efb85fb632ab87e&token=503374955&lang=zh_CN#rd)
 > - [**jjAnno 重大更新强势来袭!**](https://mp.weixin.qq.com/s?__biz=MzkyMTI1MTYxNA==&mid=2247503045&idx=1&sn=e9470f7bec1649dbe79cb7f037ca7407&chksm=c184f6b4f6f37fa20c45f1dff42ccf6a4d042083dc443204e0988037c2a28ee95d2cadb74e12&token=503374955&lang=zh_CN#rd)
