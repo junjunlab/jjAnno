@@ -23,7 +23,7 @@ devtools::install_github("junjunlab/jjAnno")
 
 ## Citation
 
-> Jun Z (2022). *jjAnno: An Annotation Package for GGplot Plot.*  https://github.com/junjunlab/jjAnno, https://junjunlab.github.io/jjAnno-manual/
+> Jun Zhang (2022). *jjAnno: An Annotation Package for GGplot Plot.*  https://github.com/junjunlab/jjAnno, https://junjunlab.github.io/jjAnno-manual/
 
 ## Example
 
