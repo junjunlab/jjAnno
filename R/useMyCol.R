@@ -123,93 +123,93 @@ useMyCol <- function(platte = NULL,
   if(showAll == FALSE){
     if(platte == "stallion"){
       col <- stallion[1:n]
-      print(paste0('This palatte have ',length(stallion),' colors!'))
+      message(paste0('This palatte have ',length(stallion),' colors!'))
     }else if(platte == "stallion2"){
       col <- stallion2[1:n]
-      print(paste0('This palatte have ',length(stallion2),' colors!'))
+      message(paste0('This palatte have ',length(stallion2),' colors!'))
     }else if(platte == "calm"){
       col <- calm[1:n]
-      print(paste0('This palatte have ',length(calm),' colors!'))
+      message(paste0('This palatte have ',length(calm),' colors!'))
     }else if(platte == "kelly"){
       col <- kelly[1:n]
-      print(paste0('This palatte have ',length(kelly),' colors!'))
+      message(paste0('This palatte have ',length(kelly),' colors!'))
     }else if(platte == "bear"){
       col <- bear[1:n]
-      print(paste0('This palatte have ',length(bear),' colors!'))
+      message(paste0('This palatte have ',length(bear),' colors!'))
     }else if(platte == "ironMan"){
       col <- ironMan[1:n]
-      print(paste0('This palatte have ',length(ironMan),' colors!'))
+      message(paste0('This palatte have ',length(ironMan),' colors!'))
     }else if(platte == "circus"){
       col <- circus[1:n]
-      print(paste0('This palatte have ',length(circus),' colors!'))
+      message(paste0('This palatte have ',length(circus),' colors!'))
     }else if(platte == "paired"){
       col <- paired[1:n]
-      print(paste0('This palatte have ',length(paired),' colors!'))
+      message(paste0('This palatte have ',length(paired),' colors!'))
     }else if(platte == "grove"){
       col <- grove[1:n]
-      print(paste0('This palatte have ',length(grove),' colors!'))
+      message(paste0('This palatte have ',length(grove),' colors!'))
     }else if(platte == "summerNight"){
       col <- summerNight[1:n]
-      print(paste0('This palatte have ',length(summerNight),' colors!'))
+      message(paste0('This palatte have ',length(summerNight),' colors!'))
     }else if(platte == "zissou"){
       col <- zissou[1:n]
-      print(paste0('This palatte have ',length(zissou),' colors!'))
+      message(paste0('This palatte have ',length(zissou),' colors!'))
     }else if(platte == "darjeeling"){
       col <- darjeeling[1:n]
-      print(paste0('This palatte have ',length(darjeeling),' colors!'))
+      message(paste0('This palatte have ',length(darjeeling),' colors!'))
     }else if(platte == "rushmore"){
       col <- rushmore[1:n]
-      print(paste0('This palatte have ',length(rushmore),' colors!'))
+      message(paste0('This palatte have ',length(rushmore),' colors!'))
     }else if(platte == "captain"){
       col <- captain[1:n]
-      print(paste0('This palatte have ',length(captain),' colors!'))
+      message(paste0('This palatte have ',length(captain),' colors!'))
     }else if(platte == "horizon"){
       col <- horizon[1:n] # continues colors
-      print(paste0('This palatte have ',length(horizon),' colors!'))
+      message(paste0('This palatte have ',length(horizon),' colors!'))
     }else if(platte == "horizonExtra"){
       col <- horizonExtra[1:n]
-      print(paste0('This palatte have ',length(horizonExtra),' colors!'))
+      message(paste0('This palatte have ',length(horizonExtra),' colors!'))
     }else if(platte == "blueYellow"){
       col <- blueYellow[1:n]
-      print(paste0('This palatte have ',length(blueYellow),' colors!'))
+      message(paste0('This palatte have ',length(blueYellow),' colors!'))
     }else if(platte == "sambaNight"){
       col <- sambaNight[1:n]
-      print(paste0('This palatte have ',length(sambaNight),' colors!'))
+      message(paste0('This palatte have ',length(sambaNight),' colors!'))
     }else if(platte == "solarExtra"){
       col <- solarExtra[1:n]
-      print(paste0('This palatte have ',length(solarExtra),' colors!'))
+      message(paste0('This palatte have ',length(solarExtra),' colors!'))
     }else if(platte == "whitePurple"){
       col <- whitePurple[1:n]
-      print(paste0('This palatte have ',length(whitePurple),' colors!'))
+      message(paste0('This palatte have ',length(whitePurple),' colors!'))
     }else if(platte == "whiteBlue"){
       col <- whiteBlue[1:n]
-      print(paste0('This palatte have ',length(whiteBlue),' colors!'))
+      message(paste0('This palatte have ',length(whiteBlue),' colors!'))
     }else if(platte == "comet"){
       col <- comet[1:n]
-      print(paste0('This palatte have ',length(comet),' colors!'))
+      message(paste0('This palatte have ',length(comet),' colors!'))
     }else if(platte == "greenBlue"){
       col <- greenBlue[1:n]
-      print(paste0('This palatte have ',length(greenBlue),' colors!'))
+      message(paste0('This palatte have ',length(greenBlue),' colors!'))
     }else if(platte == "beach"){
       col <- beach[1:n]
-      print(paste0('This palatte have ',length(beach),' colors!'))
+      message(paste0('This palatte have ',length(beach),' colors!'))
     }else if(platte == "coolwarm"){
       col <- coolwarm[1:n]
-      print(paste0('This palatte have ',length(coolwarm),' colors!'))
+      message(paste0('This palatte have ',length(coolwarm),' colors!'))
     }else if(platte == "fireworks"){
       col <- fireworks[1:n]
-      print(paste0('This palatte have ',length(fireworks),' colors!'))
+      message(paste0('This palatte have ',length(fireworks),' colors!'))
     }else if(platte == "greyMagma"){
       col <- greyMagma[1:n]
-      print(paste0('This palatte have ',length(greyMagma),' colors!'))
+      message(paste0('This palatte have ',length(greyMagma),' colors!'))
     }else if(platte == "fireworks2"){
       col <- fireworks2[1:n]
-      print(paste0('This palatte have ',length(fireworks2),' colors!'))
+      message(paste0('This palatte have ',length(fireworks2),' colors!'))
     }else if(platte == "purpleOrange"){
       col <- purpleOrange[1:n]
-      print(paste0('This palatte have ',length(purpleOrange),' colors!'))
+      message(paste0('This palatte have ',length(purpleOrange),' colors!'))
     }else{
-      print('Please give the correct name!')
+      message('Please give the correct name!')
     }
     return(col)
   }else{
@@ -220,6 +220,8 @@ useMyCol <- function(platte = NULL,
     continues_col <- c('horizon', 'horizonExtra', 'blueYellow', 'sambaNight', 'solarExtra',
                        'whitePurple', 'whiteBlue', 'comet', 'greenBlue', 'beach' ,
                        'coolwarm', 'fireworks', 'greyMagma', 'fireworks2', 'purpleOrange')
-    return(c(dicrete_col,continues_col))
+
+    message(cat("discrete colors: ",dicrete_col))
+    message(cat("continues colors: ",continues_col))
   }
 }

@@ -117,15 +117,6 @@ annoRect(object = p,
          annoPos = 'top',
          xPosition = c(1:10),
          yPosition = c(11,11.5))
-
-# another example annotation GO terms
-annoRect(object = pgo,
-        annoPos = 'right',
-        yPosition = c(1:15),
-        pCol = rep('transparent',15),
-        pFill = rep(c('#F5F0BB','#C4DFAA','#90C8AC'),each = 5),
-        xPosition = c(3,9.5),
-        rectWidth = 1)
 }
 \author{
 Junjun Lao
