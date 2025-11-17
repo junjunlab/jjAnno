@@ -1,6 +1,6 @@
 Package: jjAnno
 Title: An Annotation Package for 'ggplot2' Output
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     person("Junjun", "Lao", , "3219030654@stu.cpu.edu.cn", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7692-9105"))
@@ -8,7 +8,7 @@ Description: To make the plot more elegant with some multiple type annotations i
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Imports: 
     dplyr,
     ggiraphExtra,
@@ -22,3 +22,7 @@ Depends:
 URL: https://github.com/junjunlab/jjAnno
 BugReports: https://github.com/junjunlab/jjAnno/issues
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -191,10 +191,10 @@ annoImage <- function(object = NULL,
                                     width = imgWidth,
                                     height = imgHeight,
                                     interpolate = FALSE),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin,'native'),
-            ymax = ggplot2::unit(ymax,'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin,
+            ymax = ymax)
       }
     }else{
       for (i in 1:nPoints)  {
@@ -209,10 +209,10 @@ annoImage <- function(object = NULL,
                                     width = imgWidth,
                                     height = imgHeight,
                                     interpolate = FALSE),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }
   }else if(annoPos %in% c('left','right')){
@@ -229,10 +229,10 @@ annoImage <- function(object = NULL,
                                     width = imgWidth,
                                     height = imgHeight,
                                     interpolate = FALSE),
-            xmin = ggplot2::unit(xmin,'native'),
-            xmax = ggplot2::unit(xmax,'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin,
+            xmax = xmax,
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }else{
       for (i in 1:nPoints)  {
@@ -247,10 +247,10 @@ annoImage <- function(object = NULL,
                                     width = imgWidth,
                                     height = imgHeight,
                                     interpolate = FALSE),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }
   }else{}

@@ -111,8 +111,8 @@ annoLegend <- function(object = NULL,
                                                                        fontsize = textSize,
                                                                        fontfamily = fontfamily,
                                                                        fontface = fontface)),
-                               xmin = ggplot2::unit(legX,'native'),xmax = ggplot2::unit(legX,'native'),
-                               ymin = ggplot2::unit(legY,'native'),ymax = ggplot2::unit(legY,'native'))
+                               xmin = legX,xmax = legX,
+                               ymin = legY,ymax = legY)
 
   # ============================================================================
   # print

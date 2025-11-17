@@ -336,10 +336,10 @@ annoPoint2 <- function(object = NULL,
                                                       fill = pCol[i]),
                                       size = ggplot2::unit(ptSize,'char'),
                                       pch = pchPoint[i]),
-              xmin = ggplot2::unit(xmin[i],'native'),
-              xmax = ggplot2::unit(xmax[i],'native'),
-              ymin = ggplot2::unit(ymin,'native'),
-              ymax = ggplot2::unit(ymax,'native'))
+              xmin = xmin[i],
+              xmax = xmax[i],
+              ymin = ymin,
+              ymax = ymax)
         }
       }else{
         # loop add points
@@ -351,10 +351,10 @@ annoPoint2 <- function(object = NULL,
                                                       fill = pCol[i]),
                                       size = ggplot2::unit(ptSize,'char'),
                                       pch = pchPoint[i]),
-              xmin = ggplot2::unit(xmin[i],'native'),
-              xmax = ggplot2::unit(xmax[i],'native'),
-              ymin = ggplot2::unit(ymin[i],'native'),
-              ymax = ggplot2::unit(ymax[i],'native'))
+              xmin = xmin[i],
+              xmax = xmax[i],
+              ymin = ymin[i],
+              ymax = ymax[i])
         }
       }
     }else if(annoPos %in% c('left','right')){
@@ -368,10 +368,10 @@ annoPoint2 <- function(object = NULL,
                                                       fill = pCol[i]),
                                       size = ggplot2::unit(ptSize,'char'),
                                       pch = pchPoint),
-              xmin = ggplot2::unit(xmin,'native'),
-              xmax = ggplot2::unit(xmax,'native'),
-              ymin = ggplot2::unit(ymin[i],'native'),
-              ymax = ggplot2::unit(ymax[i],'native'))
+              xmin = xmin,
+              xmax = xmax,
+              ymin = ymin[i],
+              ymax = ymax[i])
         }
       }else{
         # loop add points
@@ -383,10 +383,10 @@ annoPoint2 <- function(object = NULL,
                                                       fill = pCol[i]),
                                       size = ggplot2::unit(ptSize,'char'),
                                       pch = pchPoint),
-              xmin = ggplot2::unit(xmin[i],'native'),
-              xmax = ggplot2::unit(xmax[i],'native'),
-              ymin = ggplot2::unit(ymin[i],'native'),
-              ymax = ggplot2::unit(ymax[i],'native'))
+              xmin = xmin[i],
+              xmax = xmax[i],
+              ymin = ymin[i],
+              ymax = ymax[i])
         }
       }
     }else{}
@@ -505,10 +505,10 @@ annoPoint2 <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin + textHVjust,'native'),
-            ymax = ggplot2::unit(ymax + textHVjust,'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin + textHVjust,
+            ymax = ymax + textHVjust)
       }
     }else if(addText == TRUE & annoPos %in% c('left','right')){
       # plot
@@ -526,10 +526,10 @@ annoPoint2 <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin + textHVjust,'native'),
-            xmax = ggplot2::unit(xmax + textHVjust,'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin + textHVjust,
+            xmax = xmax + textHVjust,
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }else{}
   }else{

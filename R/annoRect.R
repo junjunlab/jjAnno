@@ -378,10 +378,10 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin,
+                    ymax = ymax)
               }
             }else if(continuesRect == TRUE & border == TRUE){
               # plot
@@ -393,20 +393,20 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate ),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native')) +
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin,
+                    ymax = ymax) +
                   # add border
                   ggplot2::annotation_custom(
                     grob = grid::rectGrob(gp = grid::gpar(fill = 'transparent',
                                                           col = 'black',
                                                           lwd = lwd,
                                                           lty = lty)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin,
+                    ymax = ymax)
               }
             }else{
               # plot
@@ -419,10 +419,10 @@ annoRect <- function(object = NULL,
                                                           lty = lty,
                                                           lwd = lwd,
                                                           alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin,
+                    ymax = ymax)
               }
             }
           }else{
@@ -442,10 +442,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
-                    xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native'))
+                    xmin = xmin[i] - normRectShift,
+                    xmax = xmax[i] - normRectShift,
+                    ymin = ymin,
+                    ymax = ymax)
 
               }
             }else{
@@ -462,10 +462,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
-                    xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
-                    ymin = ggplot2::unit(ymin,'native'),
-                    ymax = ggplot2::unit(ymax,'native'))
+                    xmin = xmin[i] - rotatedRectShift,
+                    xmax = xmax[i] - rotatedRectShift,
+                    ymin = ymin,
+                    ymax = ymax)
 
               }
             }
@@ -486,10 +486,10 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else if(continuesRect == TRUE & border == TRUE){
               # plot
@@ -501,20 +501,20 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate ),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native')) +
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i]) +
                   # add border
                   ggplot2::annotation_custom(
                     grob = grid::rectGrob(gp = grid::gpar(fill = 'transparent',
                                                           col = 'black',
                                                           lwd = lwd,
                                                           lty = lty)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else{
               # plot
@@ -527,10 +527,10 @@ annoRect <- function(object = NULL,
                                                           lty = lty,
                                                           lwd = lwd,
                                                           alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }
 
@@ -551,10 +551,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i] - normRectShift,'native'),
-                    xmax = ggplot2::unit(xmax[i] - normRectShift,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i] - normRectShift,
+                    xmax = xmax[i] - normRectShift,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
 
               }
             }else{
@@ -571,10 +571,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i] - rotatedRectShift,'native'),
-                    xmax = ggplot2::unit(xmax[i] - rotatedRectShift,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i] - rotatedRectShift,
+                    xmax = xmax[i] - rotatedRectShift,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
 
               }
             }
@@ -597,10 +597,10 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else if(continuesRect == TRUE & border == TRUE){
               # plot
@@ -612,20 +612,20 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate ),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native')) +
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i],
+                    ymax = ymax[i]) +
                   # add border
                   ggplot2::annotation_custom(
                     grob = grid::rectGrob(gp = grid::gpar(fill = 'transparent',
                                                           col = 'black',
                                                           lwd = lwd,
                                                           lty = lty)),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else{
               # plot
@@ -638,10 +638,10 @@ annoRect <- function(object = NULL,
                                                           lty = lty,
                                                           lwd = lwd,
                                                           alpha = alpha)),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }
 
@@ -662,10 +662,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
-                    ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i] - rotatedRectShift,
+                    ymax = ymax[i] - rotatedRectShift)
 
               }
             }else{
@@ -682,10 +682,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin,'native'),
-                    xmax = ggplot2::unit(xmax,'native'),
-                    ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
-                    ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+                    xmin = xmin,
+                    xmax = xmax,
+                    ymin = ymin[i] - normRectShift,
+                    ymax = ymax[i] - normRectShift)
 
               }
             }
@@ -706,10 +706,10 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else if(continuesRect == TRUE & border == TRUE){
               # plot
@@ -721,20 +721,20 @@ annoRect <- function(object = NULL,
                                             width = ggplot2::unit(1,'native'),
                                             height = ggplot2::unit(1,'native'),
                                             interpolate = interpolate ),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native')) +
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i]) +
                   # add border
                   ggplot2::annotation_custom(
                     grob = grid::rectGrob(gp = grid::gpar(fill = 'transparent',
                                                           col = 'black',
                                                           lwd = lwd,
                                                           lty = lty)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }else{
               # plot
@@ -747,10 +747,10 @@ annoRect <- function(object = NULL,
                                                           lty = lty,
                                                           lwd = lwd,
                                                           alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i],'native'),
-                    ymax = ggplot2::unit(ymax[i],'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i],
+                    ymax = ymax[i])
               }
             }
 
@@ -771,10 +771,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i] - normRectShift,'native'),
-                    ymax = ggplot2::unit(ymax[i] - normRectShift,'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i] - normRectShift,
+                    ymax = ymax[i] - normRectShift)
 
               }
             }else{
@@ -791,10 +791,10 @@ annoRect <- function(object = NULL,
                                                              lty = lty,
                                                              lwd = lwd,
                                                              alpha = alpha)),
-                    xmin = ggplot2::unit(xmin[i],'native'),
-                    xmax = ggplot2::unit(xmax[i],'native'),
-                    ymin = ggplot2::unit(ymin[i] - rotatedRectShift,'native'),
-                    ymax = ggplot2::unit(ymax[i] - rotatedRectShift,'native'))
+                    xmin = xmin[i],
+                    xmax = xmax[i],
+                    ymin = ymin[i] - rotatedRectShift,
+                    ymax = ymax[i] - rotatedRectShift)
 
               }
             }
@@ -816,10 +816,10 @@ annoRect <- function(object = NULL,
                                                            lwd = lwd,
                                                            alpha = alpha),
                                            r = ggplot2::unit(roundRadius, "snpc")),
-                xmin = ggplot2::unit(xmin[i],'native'),
-                xmax = ggplot2::unit(xmax[i],'native'),
-                ymin = ggplot2::unit(ymin,'native'),
-                ymax = ggplot2::unit(ymax,'native'))
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin,
+                ymax = ymax)
           }
         }else{
           # plot
@@ -833,10 +833,10 @@ annoRect <- function(object = NULL,
                                                            lwd = lwd,
                                                            alpha = alpha),
                                            r = ggplot2::unit(roundRadius, "snpc")),
-                xmin = ggplot2::unit(xmin[i],'native'),
-                xmax = ggplot2::unit(xmax[i],'native'),
-                ymin = ggplot2::unit(ymin[i],'native'),
-                ymax = ggplot2::unit(ymax[i],'native'))
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin[i],
+                ymax = ymax[i])
           }
         }
       }else if(annoPos %in% c('left','right')){
@@ -852,10 +852,10 @@ annoRect <- function(object = NULL,
                                                            lwd = lwd,
                                                            alpha = alpha),
                                            r = ggplot2::unit(roundRadius, "snpc")),
-                xmin = ggplot2::unit(xmin,'native'),
-                xmax = ggplot2::unit(xmax,'native'),
-                ymin = ggplot2::unit(ymin[i],'native'),
-                ymax = ggplot2::unit(ymax[i],'native'))
+                xmin = xmin,
+                xmax = xmax,
+                ymin = ymin[i],
+                ymax = ymax[i])
           }
         }else{
           # plot
@@ -869,10 +869,10 @@ annoRect <- function(object = NULL,
                                                            lwd = lwd,
                                                            alpha = alpha),
                                            r = ggplot2::unit(roundRadius, "snpc")),
-                xmin = ggplot2::unit(xmin[i],'native'),
-                xmax = ggplot2::unit(xmax[i],'native'),
-                ymin = ggplot2::unit(ymin[i],'native'),
-                ymax = ggplot2::unit(ymax[i],'native'))
+                xmin = xmin[i],
+                xmax = xmax[i],
+                ymin = ymin[i],
+                ymax = ymax[i])
           }
         }
       }else{}
@@ -1464,10 +1464,10 @@ annoRect <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin[i] + textShift,'native'),
-            xmax = ggplot2::unit(xmax[i] + textShift,'native'),
-            ymin = ggplot2::unit(ymin + textHVjust,'native'),
-            ymax = ggplot2::unit(ymax + textHVjust,'native'))
+            xmin = xmin[i] + textShift,
+            xmax = xmax[i] + textShift,
+            ymin = ymin + textHVjust,
+            ymax = ymax + textHVjust)
       }
     }else if(addText == TRUE & annoPos %in% c('left','right')){
       # plot
@@ -1485,10 +1485,10 @@ annoRect <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin + textHVjust,'native'),
-            xmax = ggplot2::unit(xmax + textHVjust,'native'),
-            ymin = ggplot2::unit(ymin[i] + textShift,'native'),
-            ymax = ggplot2::unit(ymax[i] + textShift,'native'))
+            xmin = xmin + textHVjust,
+            xmax = xmax + textHVjust,
+            ymin = ymin[i] + textShift,
+            ymax = ymax[i] + textShift)
       }
     }else{}
   }else{

@@ -162,8 +162,8 @@ annoPoint <- function(object = NULL,
                                                   fill = pCol[i]),
                                   size = ggplot2::unit(ptSize,'char'),
                                   pch = pchPoint),
-          xmin = ggplot2::unit(xPos[i],'native'),xmax = ggplot2::unit(xPos[i],'native'),
-          ymin = ggplot2::unit(yPos,'native'),ymax = ggplot2::unit(yPos,'native'))
+          xmin = xPos[i],xmax = xPos[i],
+          ymin = yPos,ymax = yPos)
     }
   }else if(is.null(xPosition) & !is.null(yPosition)){
     # loop add points
@@ -175,8 +175,8 @@ annoPoint <- function(object = NULL,
                                                   fill = pCol[i]),
                                   size = ggplot2::unit(ptSize,'char'),
                                   pch = pchPoint),
-          xmin = ggplot2::unit(xPos,'native'),xmax = ggplot2::unit(xPos,'native'),
-          ymin = ggplot2::unit(yPos[i],'native'),ymax = ggplot2::unit(yPos[i],'native'))
+          xmin = xPos,xmax = xPos,
+          ymin = yPos[i],ymax = yPos[i])
 
     }
   }else if(!is.null(yPosition) & !is.null(xPosition)){
@@ -189,8 +189,8 @@ annoPoint <- function(object = NULL,
                                                   fill = pCol[i]),
                                   size = ggplot2::unit(ptSize,'char'),
                                   pch = pchPoint),
-          xmin = ggplot2::unit(xPos[i],'native'),xmax = ggplot2::unit(xPos[i],'native'),
-          ymin = ggplot2::unit(yPos[i],'native'),ymax = ggplot2::unit(yPos[i],'native'))
+          xmin = xPos[i],xmax = xPos[i],
+          ymin = yPos[i],ymax = yPos[i])
 
     }
   }else{
@@ -203,6 +203,7 @@ annoPoint <- function(object = NULL,
 
 
 
+
 ###############################
 #' This is a test data for this package
 #' test data describtion
@@ -211,3 +212,11 @@ annoPoint <- function(object = NULL,
 #' @docType data
 #' @author Junjun Lao
 "p"
+
+#' This is a test data for this package
+#' test data describtion
+#'
+#' @name dot_data
+#' @docType data
+#' @author Junjun Lao
+"dot_data"

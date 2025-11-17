@@ -247,10 +247,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = col[i],
                                                     lty = NULL,
                                                     lwd = NULL)),
-              xmin = ggplot2::unit(xmin[i],'native'),
-              xmax = ggplot2::unit(xmax[i],'native'),
-              ymin = ggplot2::unit(ymin,'native'),
-              ymax = ggplot2::unit(ymax,'native')
+              xmin = xmin[i],
+              xmax = xmax[i],
+              ymin = ymin,
+              ymax = ymax
             )
         }
         ##################################################
@@ -261,10 +261,10 @@ annoTriangle <- function(object = NULL,
                                      y = triType[[2]],
                                      gp = grid::gpar(fill = 'white',
                                                      col = 'white')),
-            xmin = ggplot2::unit(min(xmin),'native'),
-            xmax = ggplot2::unit(max(xmax),'native'),
-            ymin = ggplot2::unit(ymin,'native'),
-            ymax = ggplot2::unit(ymax,'native')
+            xmin = min(xmin),
+            xmax = max(xmax),
+            ymin = ymin,
+            ymax = ymax
           )
 
         ##################################################
@@ -278,10 +278,10 @@ annoTriangle <- function(object = NULL,
                                                        col = borderCol,
                                                        lty = lty,
                                                        lwd = lwd)),
-              xmin = ggplot2::unit(min(xmin),'native'),
-              xmax = ggplot2::unit(max(xmax),'native'),
-              ymin = ggplot2::unit(ymin,'native'),
-              ymax = ggplot2::unit(ymax,'native')
+              xmin = min(xmin),
+              xmax = max(xmax),
+              ymin = ymin,
+              ymax = ymax
             )
         }else{
           object <- object
@@ -297,10 +297,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = col[i],
                                                     lty = NULL,
                                                     lwd = NULL)),
-              xmin = ggplot2::unit(xmin[i],'native'),
-              xmax = ggplot2::unit(xmax[i],'native'),
-              ymin = ggplot2::unit(ymin,'native'),
-              ymax = ggplot2::unit(ymax,'native')
+              xmin = xmin[i],
+              xmax = xmax[i],
+              ymin = ymin,
+              ymax = ymax
             )
         }
 
@@ -314,10 +314,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = "transparent",
                                                     lty = lty,
                                                     lwd = lwd)),
-              xmin = ggplot2::unit(min(xmin),'native'),
-              xmax = ggplot2::unit(max(xmax),'native'),
-              ymin = ggplot2::unit(ymin,'native'),
-              ymax = ggplot2::unit(ymax,'native')
+              xmin = min(xmin),
+              xmax = max(xmax),
+              ymin = ymin,
+              ymax = ymax
             )
         }else{
           object <- object
@@ -335,10 +335,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = col[i],
                                                     lty = NULL,
                                                     lwd = NULL)),
-              xmin = ggplot2::unit(xmin,'native'),
-              xmax = ggplot2::unit(xmax,'native'),
-              ymin = ggplot2::unit(ymin[i],'native'),
-              ymax = ggplot2::unit(ymax[i],'native')
+              xmin = xmin,
+              xmax = xmax,
+              ymin = ymin[i],
+              ymax = ymax[i]
             )
         }
         ##################################################
@@ -349,10 +349,10 @@ annoTriangle <- function(object = NULL,
                                      y = triType[[2]],
                                      gp = grid::gpar(fill = 'white',
                                                      col = 'white')),
-            xmin = ggplot2::unit(xmin,'native'),
-            xmax = ggplot2::unit(xmax,'native'),
-            ymin = ggplot2::unit(min(ymin),'native'),
-            ymax = ggplot2::unit(max(ymax),'native')
+            xmin = xmin,
+            xmax = xmax,
+            ymin = min(ymin),
+            ymax = max(ymax)
           )
 
         ##################################################
@@ -366,10 +366,10 @@ annoTriangle <- function(object = NULL,
                                                        col = borderCol,
                                                        lty = lty,
                                                        lwd = lwd)),
-              xmin = ggplot2::unit(xmin,'native'),
-              xmax = ggplot2::unit(xmax,'native'),
-              ymin = ggplot2::unit(min(ymin),'native'),
-              ymax = ggplot2::unit(max(ymax),'native')
+              xmin = xmin,
+              xmax = xmax,
+              ymin = min(ymin),
+              ymax = max(ymax)
             )
         }else{
           object <- object
@@ -385,10 +385,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = col[i],
                                                     lty = NULL,
                                                     lwd = NULL)),
-              xmin = ggplot2::unit(xmin,'native'),
-              xmax = ggplot2::unit(xmax,'native'),
-              ymin = ggplot2::unit(ymin[i],'native'),
-              ymax = ggplot2::unit(ymax[i],'native')
+              xmin = xmin,
+              xmax = xmax,
+              ymin = ymin[i],
+              ymax = ymax[i]
             )
         }
 
@@ -402,10 +402,10 @@ annoTriangle <- function(object = NULL,
                                                     fill = "transparent",
                                                     lty = lty,
                                                     lwd = lwd)),
-              xmin = ggplot2::unit(xmin,'native'),
-              xmax = ggplot2::unit(xmax,'native'),
-              ymin = ggplot2::unit(min(ymin),'native'),
-              ymax = ggplot2::unit(max(ymax),'native')
+              xmin = xmin,
+              xmax = xmax,
+              ymin = min(ymin),
+              ymax = max(ymax)
             )
         }else{
           object <- object

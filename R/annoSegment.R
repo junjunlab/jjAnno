@@ -307,10 +307,10 @@ annoSegment <- function(object = NULL,
                                                       lineend = lineend,
                                                       alpha = alpha),
                                       arrow = mArrow),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin,'native'),
-            ymax = ggplot2::unit(ymax,'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin,
+            ymax = ymax)
       }
     }else if(annoPos %in% c('left','right')){
       # plot
@@ -325,10 +325,10 @@ annoSegment <- function(object = NULL,
                                                       lineend = lineend,
                                                       alpha = alpha),
                                       arrow = mArrow),
-            xmin = ggplot2::unit(xmin,'native'),
-            xmax = ggplot2::unit(xmax,'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin,
+            xmax = xmax,
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }else{}
   }else{
@@ -420,10 +420,10 @@ annoSegment <- function(object = NULL,
                                                       lineend = lineend,
                                                       alpha = alpha),
                                       arrow = bArrow),
-            xmin = ggplot2::unit(brXmin[i],'native'),
-            xmax = ggplot2::unit(brXmax[i],'native'),
-            ymin = ggplot2::unit(brYmin,'native'),
-            ymax = ggplot2::unit(brYmax,'native'))
+            xmin = brXmin[i],
+            xmax = brXmax[i],
+            ymin = brYmin,
+            ymax = brYmax)
       }
     }else if(addBranch == TRUE & annoPos %in% c('left','right')){
       # plot
@@ -438,10 +438,10 @@ annoSegment <- function(object = NULL,
                                                       lineend = lineend,
                                                       alpha = alpha),
                                       arrow = bArrow),
-            xmin = ggplot2::unit(brXmin,'native'),
-            xmax = ggplot2::unit(brXmax,'native'),
-            ymin = ggplot2::unit(brYmin[i],'native'),
-            ymax = ggplot2::unit(brYmax[i],'native'))
+            xmin = brXmin,
+            xmax = brXmax,
+            ymin = brYmin[i],
+            ymax = brYmax[i])
       }
     }else{}
   }else{
@@ -522,10 +522,10 @@ annoSegment <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin[i],'native'),
-            xmax = ggplot2::unit(xmax[i],'native'),
-            ymin = ggplot2::unit(ymin + textHVjust,'native'),
-            ymax = ggplot2::unit(ymax + textHVjust,'native'))
+            xmin = xmin[i],
+            xmax = xmax[i],
+            ymin = ymin + textHVjust,
+            ymax = ymax + textHVjust)
       }
     }else if(addText == TRUE & annoPos %in% c('left','right')){
       # plot
@@ -543,10 +543,10 @@ annoSegment <- function(object = NULL,
                                   check.overlap = T,
                                   just = "centre",
                                   rot = textRot),
-            xmin = ggplot2::unit(xmin + textHVjust,'native'),
-            xmax = ggplot2::unit(xmax + textHVjust,'native'),
-            ymin = ggplot2::unit(ymin[i],'native'),
-            ymax = ggplot2::unit(ymax[i],'native'))
+            xmin = xmin + textHVjust,
+            xmax = xmax + textHVjust,
+            ymin = ymin[i],
+            ymax = ymax[i])
       }
     }else{}
   }else{
