@@ -85,6 +85,12 @@
 \item{revColV}{Whether ajust the colors orders vertically. Default(FALSE).}
 
 \item{revColH}{Whether ajust the colors orders horizontally. Default(FALSE).}
+
+\item{clipOff}{Whether turn off the coordinate clipping so that annotations
+outside the panel can still be seen. This keeps the original coordinate
+system (e.g. coord_flip/coord_cartesian) and only sets its clip to "off".
+Equivalently you can add coord_flip(clip = "off") as the LAST coord layer
+of your plot. Default(FALSE).}
 }
 \value{
 Return a ggplot object.

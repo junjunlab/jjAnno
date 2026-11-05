@@ -122,6 +122,9 @@ annoPoint2 <- function(object = NULL,
                        aes_x = NULL,
                        aes_y = NULL){
   # ============================================================================
+  # get data first: the default facet group is derived from it
+  data <- object$data
+
   # facet group name
   facetName <- names(object$facet$params$facets)
 
@@ -135,9 +138,6 @@ annoPoint2 <- function(object = NULL,
   }
 
   # ============================================================================
-  # get data
-  data <- object$data
-
   # get mapping variables
   if(is.null(facetName)){
     aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
@@ -265,9 +265,14 @@ annoPoint2 <- function(object = NULL,
   ## This function allows us to specify which facet to annotate
   annotation_custom2 <- function(grob, xmin = -Inf, xmax = Inf,
                                  ymin = -Inf, ymax = Inf, data){
-    ggplot2::layer(data = data, stat = StatIdentity, position = PositionIdentity,
+    # The grob position is fully described by xmin/xmax/ymin/ymax, so this
+    # layer must NOT inherit the plot x/y mapping (breaks faceted plots on
+    # recent ggplot2 versions).
+    ggplot2::layer(data = data,
+                   stat = ggplot2::StatIdentity,
+                   position = ggplot2::PositionIdentity,
                    geom = ggplot2::GeomCustomAnn,
-                   inherit.aes = TRUE,
+                   inherit.aes = FALSE,
                    params = list(grob = grob,
                                  xmin = xmin, xmax = xmax,
                                  ymin = ymin, ymax = ymax))
@@ -393,8 +398,36 @@ annoPoint2 <- function(object = NULL,
   }else{
     # ==============================================
     # facet data
-    facet_data <- data.frame(myFacetGrou)
+    facet_data <- data.frame(myFacetGrou, stringsAsFactors = FALSE)
     colnames(facet_data) <- facetName
+
+    # Keep the type and level order of the facet variable from the original
+    # data, otherwise ggplot2 rebuilds the panel levels in alphabetical order
+    # and the facet order changes (issue #5).
+    facet_source <- NULL
+    if(length(facetName) == 1){
+      if(is.data.frame(data) && facetName %in% names(data)){
+        facet_source <- data[[facetName]]
+      }else if(length(object$layers) > 0){
+        for(layer_i in object$layers){
+          if(is.data.frame(layer_i$data) && facetName %in% names(layer_i$data)){
+            facet_source <- layer_i$data[[facetName]]
+            break
+          }
+        }
+      }
+    }
+
+    if(!is.null(facet_source)){
+      hit <- match(as.character(myFacetGrou), as.character(facet_source))
+      if(all(!is.na(hit))){
+        facet_data[[facetName]] <- facet_source[hit]
+      }else{
+        warning('Some myFacetGrou values are not present in the facet variable; ',
+                'use the raw facet values, not the labeller display labels.',
+                call. = FALSE)
+      }
+    }
 
     # facet plot now
     if(annoPos %in% c('top','botomn')){

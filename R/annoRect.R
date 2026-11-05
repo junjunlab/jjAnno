@@ -46,6 +46,11 @@
 #' @param interpolate Whether blur the colors. Default(TRUE).
 #' @param revColV Whether ajust the colors orders vertically. Default(FALSE).
 #' @param revColH Whether ajust the colors orders horizontally. Default(FALSE).
+#' @param clipOff Whether turn off the coordinate clipping so that annotations
+#'   outside the panel can still be seen. This keeps the original coordinate
+#'   system (e.g. coord_flip/coord_cartesian) and only sets its clip to "off".
+#'   Equivalently you can add coord_flip(clip = "off") as the LAST coord layer
+#'   of your plot. Default(FALSE).
 #'
 #' @return Return a ggplot object.
 #' @export
@@ -119,8 +124,12 @@ annoRect <- function(object = NULL,
                      conRectColBin = 10,
                      interpolate = TRUE,
                      revColV = FALSE,
-                     revColH = FALSE){
+                     revColH = FALSE,
+                     clipOff = FALSE){
   # ============================================================================
+  # get data first: the default facet group is derived from it
+  data <- object$data
+
   # facet group name
   facetName <- names(object$facet$params$facets)
 
@@ -134,9 +143,6 @@ annoRect <- function(object = NULL,
   }
 
   # ============================================================================
-  # get data
-  data <- object$data
-
   # get mapping variables
   if(is.null(facetName)){
     aes_x <- ggiraphExtra::getMapping(object$mapping,"x")
@@ -300,9 +306,15 @@ annoRect <- function(object = NULL,
   ## This function allows us to specify which facet to annotate
   annotation_custom2 <- function(grob, xmin = -Inf, xmax = Inf,
                                  ymin = -Inf, ymax = Inf, data){
-    ggplot2::layer(data = data, stat = StatIdentity, position = PositionIdentity,
+    # The grob position is fully described by xmin/xmax/ymin/ymax, so the
+    # annotation layer must NOT inherit the plot x/y mapping. Inheriting it
+    # makes faceted annotation fail on recent ggplot2 versions because the
+    # layer data only contains the facet column.
+    ggplot2::layer(data = data,
+                   stat = ggplot2::StatIdentity,
+                   position = ggplot2::PositionIdentity,
                    geom = ggplot2::GeomCustomAnn,
-                   inherit.aes = TRUE,
+                   inherit.aes = FALSE,
                    params = list(grob = grob,
                                  xmin = xmin, xmax = xmax,
                                  ymin = ymin, ymax = ymax))
@@ -880,8 +892,37 @@ annoRect <- function(object = NULL,
   }else{
     # ==================================================
     # facet data
-    facet_data <- data.frame(myFacetGrou)
+    facet_data <- data.frame(myFacetGrou, stringsAsFactors = FALSE)
     colnames(facet_data) <- facetName
+
+    # Keep the type and level order of the facet variable from the original
+    # data. Passing a plain character column to a new layer makes ggplot2
+    # rebuild the facet levels in alphabetical order, which changes the
+    # facet order of the whole plot (issue #5).
+    facet_source <- NULL
+    if(length(facetName) == 1){
+      if(is.data.frame(data) && facetName %in% names(data)){
+        facet_source <- data[[facetName]]
+      }else if(length(object$layers) > 0){
+        for(layer_i in object$layers){
+          if(is.data.frame(layer_i$data) && facetName %in% names(layer_i$data)){
+            facet_source <- layer_i$data[[facetName]]
+            break
+          }
+        }
+      }
+    }
+
+    if(!is.null(facet_source)){
+      hit <- match(as.character(myFacetGrou), as.character(facet_source))
+      if(all(!is.na(hit))){
+        facet_data[[facetName]] <- facet_source[hit]
+      }else{
+        warning('Some myFacetGrou values are not present in the facet variable; ',
+                'use the raw facet values, not the labeller display labels.',
+                call. = FALSE)
+      }
+    }
 
     # facet plot
     if(roundRect == FALSE){
@@ -1541,8 +1582,24 @@ annoRect <- function(object = NULL,
   }
 
   # ============================================================================
+  # Allow annotations outside the panel (issue #4). Adding coord_cartesian(clip
+  # = "off") BEFORE coord_flip() does not work, because the later coord replaces
+  # the former and resets clip to "on". A child ggproto keeps all the original
+  # coord settings (limits, expand, ...) and never modifies the shared coord
+  # object. Adding it with "+" is required: assigning to $coordinates directly
+  # breaks S7 dispatch in ggplot2 >= 4.0.
+  # Do not assign the result back to `object`: the S7 plot keeps a reference to
+  # its coord, and overwriting that binding creates a self-reference which makes
+  # ggplot_build() recurse on ggplot2 >= 4.0.
+  out <- object
+  if(isTRUE(clipOff)){
+    crd <- ggplot2::ggproto(NULL, object$coordinates, clip = 'off')
+    out <- suppressMessages(object + crd)
+  }
+
+  # ============================================================================
   # print
-  print(object)
+  print(out)
 }
 
 
